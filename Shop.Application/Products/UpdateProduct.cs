@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shop.Application.Products
 {
-    class UpdateProduct
+    public class UpdateProduct
     {
     }
 }

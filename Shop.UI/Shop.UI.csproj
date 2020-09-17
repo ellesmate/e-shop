@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Shop.Application\Shop.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
 </Project>

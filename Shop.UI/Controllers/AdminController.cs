@@ -27,7 +27,7 @@ namespace Shop.UI.Controllers
         [HttpPost("products")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProduct.Request request) => Ok((await new CreateProduct(_ctx).Do(request)));
 
-        [HttpDelete("products")]
+        [HttpDelete("products/{id}")]
         public async Task<IActionResult> DeleteProduct(int id) => Ok((await new DeleteProduct(_ctx).Do(id)));
 
         [HttpPut("products")]

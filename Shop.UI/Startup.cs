@@ -28,6 +28,8 @@ namespace Shop.UI
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DefaultConnection"]));
 
+            //services.AddControllersWithViews();
+            services.AddControllers();
             services.AddRazorPages();
         }
 
@@ -54,8 +56,10 @@ namespace Shop.UI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });
+
         }
     }
 }

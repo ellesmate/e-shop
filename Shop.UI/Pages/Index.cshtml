@@ -8,9 +8,10 @@
     @{ 
         foreach (var p in Model.Products)
         {
-            <p>
+            <a asp-page="Product" asp-route-name="@p.Name.Replace(" ", "-")">
                 @p.Name - @p.Description - @p.Value
-            </p>
+            </a>
+            <br />
         }
     }
 </div>

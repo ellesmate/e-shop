@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Shop.Database;
 using Shop.Application.Products;
+using Microsoft.AspNetCore.Http;
 
 namespace Shop.UI.Pages
 {

@@ -55,10 +55,12 @@ namespace Shop.UI.Pages.Checkout
             var service = new ChargeService();
             var charge = service.Create(options);
 
+            var sessionId = HttpContext.Session.Id;
+
             await new CreateOrder(_ctx).Do(new CreateOrder.Request
             {
-                OrderRef = CreateOrderReference(),
                 StripeReference = charge.Id,
+                SessionId = sessionId,
                 
                 FirstName = CartOrder.CustomerInformation.FirstName,
                 LastName = CartOrder.CustomerInformation.LastName,
@@ -79,21 +81,7 @@ namespace Shop.UI.Pages.Checkout
             return RedirectToPage("/Index");
         }
 
-        public string CreateOrderReference()
-        {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var result = new char[12];
-            var random = new Random();
-
-            do
-            {
-                for (int i = 0; i < result.Length; i++)
-                    result[i] = chars[random.Next(chars.Length)];
-
-            } while (_ctx.Orders.Any(x => x.OrderRef == new string(result)));
-
-            return new string(result);
-        }
+        
 
     }
 }

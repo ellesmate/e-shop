@@ -20,8 +20,8 @@ namespace Shop.Application.Orders
 
         public class Request
         {
-            public string OrderRef { get; set; }
             public string StripeReference { get; set; }
+            public string SessionId { get; set; }
 
             public string FirstName { get; set; }
             public string LastName { get; set; }
@@ -44,16 +44,13 @@ namespace Shop.Application.Orders
 
         public async Task<bool> Do(Request request)
         {
-            var stocksToUpdate = _ctx.Stock.AsEnumerable().Where(x => request.Stocks.Any(y => y.StockId == x.Id)).ToList();
+            var stockOnHold = _ctx.StocksOnHold.AsEnumerable().Where(x => x.SessionId == request.SessionId).ToList();
 
-            foreach (var stock in stocksToUpdate)
-            {
-                stock.Qty -= request.Stocks.FirstOrDefault(x => x.StockId == stock.Id).Qty;
-            }
+            _ctx.StocksOnHold.RemoveRange(stockOnHold);
 
             var order = new Order
             {
-                OrderRef = request.OrderRef,
+                OrderRef = CreateOrderReference(),
                 StripeReference = request.StripeReference,
 
                 FirstName = request.FirstName,
@@ -75,6 +72,22 @@ namespace Shop.Application.Orders
             _ctx.Add(order);
 
             return await _ctx.SaveChangesAsync() > 0;
+        }
+
+        public string CreateOrderReference()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var result = new char[12];
+            var random = new Random();
+
+            do
+            {
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = chars[random.Next(chars.Length)];
+
+            } while (_ctx.Orders.Any(x => x.OrderRef == new string(result)));
+
+            return new string(result);
         }
     }
 }

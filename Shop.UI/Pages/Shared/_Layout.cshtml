@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Index">Admin</a>
+    <a asp-page="/Admin/Index">Admin</a>
+    <a asp-page="/Accounts/Login">Sign in</a>
+    <a asp-controller="/Accounts" asp-action="Logout">Sign Out</a>
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

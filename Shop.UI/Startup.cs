@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Shop.Database;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.UI
 {
@@ -28,9 +30,49 @@ namespace Shop.UI
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DefaultConnection"]));
 
-            //services.AddControllersWithViews();
-            services.AddControllers();
-            services.AddRazorPages();
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddControllers();
+            //services.AddControllers().ConfigureApiBehaviorOptions(options =>
+            //{
+
+            //});
+            //services.AddRazorPages().AddRazorPagesOptions(options => 
+            //{
+            //    options.Conventions.AuthorizeFolder("/Admin");
+            //});
+
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Admin");
+            })
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                //options.Cookie.HttpOnly = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Accounts/Login";
+                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                //options.SlidingExpiration = true;
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
+                options.AddPolicy("Manager", policy => policy.RequireClaim("Role", "Manager"));
+            });
+
 
             services.AddSession(options =>
             {
@@ -61,9 +103,11 @@ namespace Shop.UI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSession();
+
 
             app.UseEndpoints(endpoints =>
             {

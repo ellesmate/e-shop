@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IAuthorizationService authService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -13,12 +15,19 @@
         <div class="columns">
             <div class="column is-3">
                 <div class="menu">
-                    <p class="menu-label">Admin Menu</p>
+                    <p class="menu-label">Store Menu</p>
                     <ul class="menu-list">
                         <li><a asp-page="/Admin/Index">Products</a></li>
                         <li><a asp-page="/Admin/Orders">Orders</a></li>
                         <li><a asp-page="/Admin/Stock">Stock</a></li>
                     </ul>
+                    @if ((await authService.AuthorizeAsync(User, "Admin")).Succeeded)
+                    {
+                        <p class="menu-label">Admin Menu</p>
+                        <ul class="menu-list">
+                            <li><a asp-page="/Admin/Stock">Configure Users</a></li>
+                        </ul>
+                    }
                     <ul class="menu-list">
                         <li><a asp-page="/Index">Back to Main</a></li>
                     </ul>

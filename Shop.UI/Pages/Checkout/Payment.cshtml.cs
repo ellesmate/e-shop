@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Shop.Application.Cart;
 using Shop.Application.Orders;
@@ -43,7 +42,7 @@ namespace Shop.UI.Pages.Checkout
                 Source = stripeToken
             });
 
-            var CartOrder = new GetOrder(HttpContext.Session, _ctx).Do();
+            var CartOrder = new Application.Cart.GetOrder(HttpContext.Session, _ctx).Do();
 
             var options = new ChargeCreateOptions
             {

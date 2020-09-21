@@ -23,14 +23,15 @@ namespace Shop.Application.Products
 
             if (stocksOnHold.Count > 0)
             {
-                var stockToReturn = _ctx.Stock.Where(x => stocksOnHold.Any(y => y.StockId == x.Id)).ToList();
+                var stocksId = stocksOnHold.Select(x => x.StockId);
+                var stockToReturn = _ctx.Stock.Where(x => stocksId.Contains(x.Id)).ToList();
 
                 foreach (var stock in stockToReturn)
                 {
                     stock.Qty += stocksOnHold.FirstOrDefault(x => x.StockId == stock.Id).Qty;
                 }
 
-                _ctx.RemoveRange(stocksOnHold);
+                _ctx.StocksOnHold.RemoveRange(stocksOnHold);
 
                 await _ctx.SaveChangesAsync();
             }
@@ -42,7 +43,7 @@ namespace Shop.Application.Products
                 {
                     Name = x.Name,
                     Description = x.Description,
-                    Value = $"$ {x.Value:N2}",
+                    Value = $"${x.Value:N2}",
 
                     Stock = x.Stock.Select(y => new StockViewModel
                     {

@@ -3,15 +3,37 @@
 @{
 }
 
-<div>
-    @foreach (var product in Model.Cart)
-    {
-        <p>@product.Name</p>
-        <p>@product.Value</p>
-        <p>@product.Qty</p>
-        <p>@product.StockId</p>
-    }
+<div class="container">
+    <div class="columns">
+        <div class="column is-8 is-offset-2">
+            @foreach (var product in Model.Cart)
+            {
+                <div class="level">
+
+                    <div class="level-item">
+                        <figure class="image is-128x128">
+                            <img src="~/images/candy.jpg" />
+                        </figure>
+                    </div>
+                    <div class="level-item">
+                        <p class="title">
+                            @product.Name
+                        </p>
+                    </div>
+                    <div class="level-item">
+                        @product.Qty
+                    </div>
+                    <div class="level-item">
+                        @product.Value
+                    </div>
+
+                </div>
+            }
+
+            <div class="has-text-right">
+                <a asp-page="/Index" class="button is-text">Back to shop</a>
+                <a asp-page="/Checkout/CustomerInformation" class="button is-success">Checkout</a>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-<vc:cart view="Small"></vc:cart>

@@ -19,7 +19,7 @@ namespace Shop.Application.Products
 
         public async Task<ProductViewModel> Do(string name)
         {
-            var stocksOnHold = _ctx.StocksOnHold.Where(x => x.ExpiryDate > DateTime.Now).ToList();
+            var stocksOnHold = _ctx.StocksOnHold.Where(x => x.ExpiryDate < DateTime.Now).ToList();
 
             if (stocksOnHold.Count > 0)
             {

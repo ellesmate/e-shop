@@ -8,9 +8,9 @@ namespace Shop.UI.Pages.Checkout
     {
         [BindProperty]
         public AddCustomerInformation.Request CustomerInformation { get; set; }
-        public IActionResult OnGet()
+        public IActionResult OnGet([FromServices] GetCustomerInformation getCustomerInformation)
         {
-            var information = new GetCustomerInformation(HttpContext.Session).Do();
+            var information = getCustomerInformation.Do();
             if (information == null)
             {
                 return Page();
@@ -21,14 +21,14 @@ namespace Shop.UI.Pages.Checkout
             }
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost([FromServices] AddCustomerInformation addCustomerInformation)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            new AddCustomerInformation(HttpContext.Session).Do(CustomerInformation);
+            addCustomerInformation.Do(CustomerInformation);
 
             return RedirectToPage("/Checkout/Payment");
         }

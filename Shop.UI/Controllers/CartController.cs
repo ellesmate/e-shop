@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Cart;
-using Shop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
@@ -12,15 +7,11 @@ namespace Shop.UI.Controllers
     [Route("[controller]/[action]")]
     public class CartController : Controller
     {
-        private ApplicationDbContext _ctx;
-
-        public CartController(ApplicationDbContext ctx)
-        {
-            _ctx = ctx;
-        }
 
         [HttpPost("{stockId}")]
-        public async Task<IActionResult> AddOne(int stockId)
+        public async Task<IActionResult> AddOne(
+            int stockId,
+            [FromServices] AddToCart addToCart)
         {
             var request = new AddToCart.Request
             {
@@ -28,7 +19,7 @@ namespace Shop.UI.Controllers
                 Qty = 1
             };
 
-            var success = await new AddToCart(HttpContext.Session, _ctx).Do(request);
+            var success = await addToCart.Do(request);
 
             if (success)
             {
@@ -38,7 +29,9 @@ namespace Shop.UI.Controllers
         }
 
         [HttpPost("{stockId}")]
-        public async Task<IActionResult> RemoveOne(int stockId)
+        public async Task<IActionResult> RemoveOne(
+            int stockId,
+            [FromServices] RemoveFromCart removeFromCart)
         {
             var request = new RemoveFromCart.Request
             {
@@ -46,7 +39,7 @@ namespace Shop.UI.Controllers
                 Qty = 1
             };
 
-            var success = await new RemoveFromCart(HttpContext.Session, _ctx).Do(request);
+            var success = await removeFromCart.Do(request);
 
             if (success)
             {
@@ -56,7 +49,9 @@ namespace Shop.UI.Controllers
         }
 
         [HttpPost("{stockId}")]
-        public async Task<IActionResult> RemoveAll(int stockId)
+        public async Task<IActionResult> RemoveAll(
+            int stockId,
+            [FromServices] RemoveFromCart removeFromCart)
         {
             var request = new RemoveFromCart.Request
             {
@@ -64,7 +59,7 @@ namespace Shop.UI.Controllers
                 All = true
             };
 
-            var success = await new RemoveFromCart(HttpContext.Session, _ctx).Do(request);
+            var success = await removeFromCart.Do(request);
 
             if (success)
             {

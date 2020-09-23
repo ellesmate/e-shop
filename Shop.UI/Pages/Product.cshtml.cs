@@ -33,9 +33,9 @@ namespace Shop.UI.Pages
                 return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost([FromServices] AddToCart addToCart)
         {
-            var stockAdded = await new AddToCart(HttpContext.Session, _ctx).Do(CartViewModel);
+            var stockAdded = await addToCart.Do(CartViewModel);
 
             if (stockAdded)
             {

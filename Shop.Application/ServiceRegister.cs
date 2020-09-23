@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Shop.Application.Cart;
 using Shop.Application.OrdersAdmin;
 using Shop.Application.UsersAdmin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Application
 {
@@ -13,7 +9,14 @@ namespace Shop.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection @this)
         {
-            @this.AddTransient<GetOrder>();
+            @this.AddTransient<AddCustomerInformation>();
+            @this.AddTransient<AddToCart>();
+            @this.AddTransient<GetCart>();
+            @this.AddTransient<GetCustomerInformation>();
+            @this.AddTransient<Cart.GetOrder>();
+            @this.AddTransient<RemoveFromCart>();
+
+            @this.AddTransient<OrdersAdmin.GetOrder>();
             @this.AddTransient<GetOrders>();
             @this.AddTransient<UpdateOrder>();
 

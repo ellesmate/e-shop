@@ -2,10 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.OrdersAdmin;
 using Shop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
@@ -34,6 +30,6 @@ namespace Shop.UI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(
             int id,
-            [FromServices] UpdateOrder updateOrder) => Ok(await updateOrder.Do(id));
+            [FromServices] UpdateOrder updateOrder) => Ok(await updateOrder.DoAsync(id));
     }
 }

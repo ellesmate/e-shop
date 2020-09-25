@@ -1,32 +1,26 @@
-﻿using Shop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using Shop.Domain.Infrastructure;
 
 namespace Shop.Application.ProductsAdmin
 {
     public class GetProduct
     {
-        private ApplicationDbContext _ctx;
+        private readonly IProductManager _productManager;
 
-        public GetProduct(ApplicationDbContext ctx)
+        public GetProduct(IProductManager productManager)
         {
-            _ctx = ctx;
+            _productManager = productManager;
         }
 
         public ProductViewModel Do(int id)
         {
-            return _ctx.Products.Where(x => x.Id == id)
-                .Select(x => new ProductViewModel
+            return _productManager
+                .GetProductById(id, x => new ProductViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
                     Value = x.Value,
-                })
-                .FirstOrDefault();
+                });
         }
         public class ProductViewModel
         {

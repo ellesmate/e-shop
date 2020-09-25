@@ -1,32 +1,26 @@
-﻿using Shop.Database;
-using Shop.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using Shop.Domain.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
 {
     public class UpdateProduct
     {
-        private ApplicationDbContext _context;
+        private readonly IProductManager _productManager;
 
-        public UpdateProduct(ApplicationDbContext context)
+        public UpdateProduct(IProductManager productManager)
         {
-            _context = context;
+            _productManager = productManager;
         }
 
         public async Task<Response> Do(Request request)
         {
-            var product = _context.Products.FirstOrDefault(x => x.Id == request.Id);
+            var product = _productManager.GetProductById(request.Id, x => x);
 
             product.Name = request.Name;
             product.Description = request.Description;
             product.Value = request.Value;
 
-            await _context.SaveChangesAsync();
+            await _productManager.UpdateProduct(product);
 
             return new Response 
             {

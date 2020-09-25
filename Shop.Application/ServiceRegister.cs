@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Shop.Application.Cart;
+﻿using Shop.Application.Cart;
 using Shop.Application.OrdersAdmin;
 using Shop.Application.UsersAdmin;
 
-namespace Shop.Application
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceRegister
     {
@@ -13,10 +12,10 @@ namespace Shop.Application
             @this.AddTransient<AddToCart>();
             @this.AddTransient<GetCart>();
             @this.AddTransient<GetCustomerInformation>();
-            @this.AddTransient<Cart.GetOrder>();
+            @this.AddTransient<Shop.Application.Cart.GetOrder>();
             @this.AddTransient<RemoveFromCart>();
 
-            @this.AddTransient<OrdersAdmin.GetOrder>();
+            @this.AddTransient<Shop.Application.OrdersAdmin.GetOrder>();
             @this.AddTransient<GetOrders>();
             @this.AddTransient<UpdateOrder>();
 

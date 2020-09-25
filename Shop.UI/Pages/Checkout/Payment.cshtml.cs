@@ -6,19 +6,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Shop.Application.Cart;
 using Shop.Application.Orders;
-using Shop.Database;
 using Stripe;
 
 namespace Shop.UI.Pages.Checkout
 {
     public class PaymentModel : PageModel
     {
-        private ApplicationDbContext _ctx;
         public string PublicKey { get; }
 
-        public PaymentModel(IConfiguration config, ApplicationDbContext ctx)
+        public PaymentModel(IConfiguration config)
         {
-            _ctx = ctx;
             PublicKey = config["Stripe:PublicKey"].ToString();
         }
 
@@ -36,7 +33,8 @@ namespace Shop.UI.Pages.Checkout
         public async Task<IActionResult> OnPost(
             string stripeEmail, 
             string stripeToken,
-            [FromServices] Application.Cart.GetOrder getOrder)
+            [FromServices] Application.Cart.GetOrder getOrder,
+            [FromServices] CreateOrder createOrder)
         {
             var customers = new CustomerService();
             var customer = customers.Create(new CustomerCreateOptions
@@ -60,7 +58,7 @@ namespace Shop.UI.Pages.Checkout
 
             var sessionId = HttpContext.Session.Id;
 
-            await new CreateOrder(_ctx).Do(new CreateOrder.Request
+            await createOrder.Do(new CreateOrder.Request
             {
                 StripeReference = charge.Id,
                 SessionId = sessionId,

@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shop.Database;
+﻿using Shop.Domain.Infrastructure;
+using Shop.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,11 +8,11 @@ namespace Shop.Application.Orders
 {
     public class GetOrder
     {
-        private ApplicationDbContext _ctx;
+        private readonly IOrderManager _orderManager;
 
-        public GetOrder(ApplicationDbContext ctx)
+        public GetOrder(IOrderManager orderManager)
         {
-            _ctx = ctx;
+            _orderManager = orderManager;
         }
 
         public class Response
@@ -42,36 +43,32 @@ namespace Shop.Application.Orders
         }
 
         public Response Do(string reference) =>
-            _ctx.Orders
-                .Where(x => x.OrderRef == reference)
-                .Include(x => x.OrderStocks)
-                .ThenInclude(x => x.Stock)
-                .ThenInclude(x => x.Product)
-                .Select(x => new Response
+            _orderManager.GetOrderByReference(reference, Projection);
+
+        private static Func<Order, Response> Projection = (order) => 
+            new Response
+            {
+                OrderRef = order.OrderRef,
+
+                FirstName = order.OrderRef,
+                LastName = order.OrderRef,
+                Email = order.OrderRef,
+                PhoneNumber = order.OrderRef,
+                Address1 = order.OrderRef,
+                Address2 = order.OrderRef,
+                City = order.OrderRef,
+                PostCode = order.OrderRef,
+
+                Products = order.OrderStocks.Select(y => new Product
                 {
-                    OrderRef = x.OrderRef,
+                    Name = y.Stock.Product.Name,
+                    Description = y.Stock.Product.Description,
+                    Value = $"$ {y.Stock.Product.Value:N2}",
+                    Qty = y.Qty,
+                    StockDescription = y.Stock.Description
+                }),
 
-                    FirstName = x.OrderRef,
-                    LastName = x.OrderRef,
-                    Email = x.OrderRef,
-                    PhoneNumber = x.OrderRef,
-                    Address1 = x.OrderRef,
-                    Address2 = x.OrderRef,
-                    City = x.OrderRef,
-                    PostCode = x.OrderRef,
-
-                    Products = x.OrderStocks.Select(y => new Product
-                    {
-                        Name = y.Stock.Product.Name,
-                        Description = y.Stock.Product.Description,
-                        Value = $"$ {y.Stock.Product.Value:N2}",
-                        Qty = y.Qty,
-                        StockDescription = y.Stock.Description
-                    }),
-
-                    TotalValue = $"$ {x.OrderStocks.Sum(y => y.Stock.Product.Value * y.Qty):N2}"
-
-                }).FirstOrDefault();
-
+                TotalValue = $"${order.OrderStocks.Sum(y => y.Stock.Product.Value * y.Qty):N2}"
+            };
     }
 }

@@ -1,32 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shop.Database;
-using System;
+﻿using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Shop.Application.Products
 {
     public class GetProducts
     {
-        private ApplicationDbContext _ctx;
+        private IProductManager _productManager;
 
-        public GetProducts(ApplicationDbContext ctx)
+        public GetProducts(IProductManager productManager)
         {
-            _ctx = ctx;
+            _productManager = productManager;
         }
 
         public IEnumerable<ProductViewModel> Do()
         {
-            return _ctx.Products
-                .Include(x => x.Stock)
-                .Select(x => new ProductViewModel
-            {
-                Name = x.Name,
-                Description = x.Description,
-                Value = $"${x.Value:N2}",
-                StockCount = x.Stock.Sum(y => y.Qty)
-            }).ToList();
+            return _productManager
+                .GetProductsWithStock(x => new ProductViewModel
+                {
+                    Name = x.Name,
+                    Description = x.Description,
+                    Value = x.Value.GetValueString(),
+                    StockCount = x.Stock.Sum(y => y.Qty)
+                });
         }
         public class ProductViewModel
         {

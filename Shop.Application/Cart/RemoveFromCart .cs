@@ -1,55 +1,33 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Shop.Database;
-using Shop.Application.Infrastructure;
+﻿using System.Threading.Tasks;
+using Shop.Domain.Infrastructure;
 
 namespace Shop.Application.Cart
 {
     public class RemoveFromCart
     {
         private ISessionManager _sessionManager;
-        private ApplicationDbContext _ctx;
+        private IStockManager _stockManager;
 
-        public RemoveFromCart(ISessionManager sessionManager, ApplicationDbContext ctx)
+        public RemoveFromCart(ISessionManager sessionManager, IStockManager stockManager)
         {
             _sessionManager = sessionManager;
-            _ctx = ctx;
+            _stockManager = stockManager;
         }
 
         public class Request
         {
             public int StockId { get; set; }
             public int Qty { get; set; }
-            public bool All { get; set; }
         }
 
         public async Task<bool> Do(Request request)
         {
-            var stockOnHold = _ctx.StocksOnHold
-                .FirstOrDefault(x => x.StockId == request.StockId && x.SessionId == _sessionManager.GetId());
+            if (request.Qty <= 0)
+                return false;
 
-            var stock = _ctx.Stock.FirstOrDefault(x => x.Id == request.StockId);
+            await _stockManager.RemoveStockFromHold(request.StockId, request.Qty, _sessionManager.GetId());
 
-            if (request.All)
-            {
-                stock.Qty += stockOnHold.Qty;
-                _sessionManager.RemoveProduct(request.StockId, stockOnHold.Qty);
-                stockOnHold.Qty = 0;
-            }
-            else
-            {
-                stock.Qty += request.Qty;
-                stockOnHold.Qty -= request.Qty;
-                _sessionManager.RemoveProduct(request.StockId, request.Qty);
-
-            }
-
-            if (stockOnHold.Qty <= 0)
-            {
-                _ctx.Remove(stockOnHold);
-            }
-
-            await _ctx.SaveChangesAsync();
+            _sessionManager.RemoveProduct(request.StockId, request.Qty);
 
             return true;
         }

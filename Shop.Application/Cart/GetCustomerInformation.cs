@@ -1,5 +1,4 @@
-﻿
-using Shop.Application.Infrastructure;
+﻿using Shop.Domain.Infrastructure;
 
 namespace Shop.Application.Cart
 {

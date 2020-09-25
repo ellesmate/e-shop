@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Application.Cart;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
@@ -28,15 +29,16 @@ namespace Shop.UI.Controllers
             return BadRequest("Failed to add to cart");
         }
 
-        [HttpPost("{stockId}")]
-        public async Task<IActionResult> RemoveOne(
+        [HttpPost("{stockId}/{qty}")]
+        public async Task<IActionResult> Remove(
             int stockId,
+            int qty,
             [FromServices] RemoveFromCart removeFromCart)
         {
             var request = new RemoveFromCart.Request
             {
                 StockId = stockId,
-                Qty = 1
+                Qty = qty
             };
 
             var success = await removeFromCart.Do(request);
@@ -47,25 +49,19 @@ namespace Shop.UI.Controllers
             }
             return BadRequest("Failed to remove item from cart");
         }
-
-        [HttpPost("{stockId}")]
-        public async Task<IActionResult> RemoveAll(
-            int stockId,
-            [FromServices] RemoveFromCart removeFromCart)
+        [HttpGet]
+        public IActionResult GetCartComponent([FromServices] GetCart getCart)
         {
-            var request = new RemoveFromCart.Request
-            {
-                StockId = stockId,
-                All = true
-            };
+            var totalValue = getCart.Do().Sum(x => x.RealValue * x.Qty);
 
-            var success = await removeFromCart.Do(request);
+            return PartialView("Components/Cart/Small", $"${totalValue:N2}");
+        }
+        [HttpGet]
+        public IActionResult GetCartMain([FromServices] GetCart getCart)
+        {
+            var cart = getCart.Do();
 
-            if (success)
-            {
-                return Ok("Removed all items from cart");
-            }
-            return BadRequest("Failed to remove items from cart");
+            return PartialView("_CartPartial", cart);
         }
     }
 }

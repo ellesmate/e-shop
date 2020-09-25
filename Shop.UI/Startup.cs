@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Application.UsersAdmin;
 using Shop.Application;
-using Shop.Application.Infrastructure;
+using Shop.Domain.Infrastructure;
+using Shop.UI.Infrastructure;
 
 namespace Shop.UI
 {
@@ -36,15 +33,6 @@ namespace Shop.UI
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            //services.AddControllers();
-            //services.AddControllers().ConfigureApiBehaviorOptions(options =>
-            //{
-
-            //});
-            //services.AddRazorPages().AddRazorPagesOptions(options => 
-            //{
-            //    options.Conventions.AuthorizeFolder("/Admin");
-            //});
 
             services.AddMvc().AddRazorPagesOptions(options =>
             {
@@ -88,7 +76,8 @@ namespace Shop.UI
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
 
-            services.AddTransient<ISessionManager, SessionManager>();
+            services.AddTransient<IStockManager, StockManager>();
+            services.AddScoped<ISessionManager, SessionManager>();
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
 

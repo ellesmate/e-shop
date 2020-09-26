@@ -48,8 +48,6 @@ namespace Shop.UI
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
-            services.AddTransient<IValidator<AddCustomerInformation.Request>, AddCustomerInformationRequestValidation>();
-
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -77,13 +75,11 @@ namespace Shop.UI
                     || context.User.HasClaim("Role", "Admin")));
             });
 
-
             services.AddSession(options =>
             {
                 options.Cookie.Name = "Cart";
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
-
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
 

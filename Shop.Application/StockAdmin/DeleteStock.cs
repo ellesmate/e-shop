@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.StockAdmin
 {
+    [Service]
     public class DeleteStock
     {
         private readonly IStockManager _stockManager;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Shop.Application.ProductsAdmin
 {
+    [Service]
     public class GetProducts
     {
         private readonly IProductManager _productManager;

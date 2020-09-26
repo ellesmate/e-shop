@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.OrdersAdmin
 {
+    [Service]
     public class UpdateOrder
     {
         private IOrderManager _orderManager;

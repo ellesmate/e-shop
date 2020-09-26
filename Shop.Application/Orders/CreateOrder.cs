@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.Orders
 {
+    [Service]
     public class CreateOrder
     {
         private IOrderManager _orderManager;

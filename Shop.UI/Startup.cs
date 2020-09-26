@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Shop.Application;
 using Shop.Domain.Infrastructure;
 using Shop.UI.Infrastructure;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Shop.Application.Cart;
+using Shop.UI.ValidationContexts;
 
 namespace Shop.UI
 {
@@ -34,13 +38,17 @@ namespace Shop.UI
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AuthorizeFolder("/Admin");
-                options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
-            })
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services
+                .AddMvc()
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Admin");
+                    options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
+            services.AddTransient<IValidator<AddCustomerInformation.Request>, AddCustomerInformationRequestValidation>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -76,8 +84,6 @@ namespace Shop.UI
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
 
-            services.AddTransient<IStockManager, StockManager>();
-            services.AddScoped<ISessionManager, SessionManager>();
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
 

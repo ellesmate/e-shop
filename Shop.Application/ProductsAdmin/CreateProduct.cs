@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
 {
+    [Service]
     public class CreateProduct
     {
         private readonly IProductManager _productManager;

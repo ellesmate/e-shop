@@ -2,6 +2,7 @@
 
 namespace Shop.Application.ProductsAdmin
 {
+    [Service]
     public class GetProduct
     {
         private readonly IProductManager _productManager;

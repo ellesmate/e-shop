@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Shop.Application.StockAdmin
 {
+    [Service]
     public class GetStock
     {
         private readonly IProductManager _productManager;

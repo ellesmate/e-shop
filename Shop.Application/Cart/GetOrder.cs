@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Shop.Application.Cart
 {
+    [Service]
     public class GetOrder
     {
         private ISessionManager _sessionManager;

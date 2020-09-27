@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Shop.Application.Cart;
 using Shop.UI.ValidationContexts;
+using Npgsql;
 
 namespace Shop.UI
 {
@@ -33,7 +34,20 @@ namespace Shop.UI
         {
             services.AddHttpContextAccessor();
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DefaultConnection"]));
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DefaultConnection"]));
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            Console.Write("DatabaseURL INformation: ");
+            Console.WriteLine(databaseUrl);
+            if (databaseUrl != null)
+            {
+                var connectionString = ApplicationDbContext.GetNpgsqlConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
+                Console.WriteLine(connectionString);
+                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration["DefaultConnection"]));
+            }
 
             services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();

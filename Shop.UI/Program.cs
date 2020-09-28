@@ -61,9 +61,10 @@ namespace Shop.UI
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((builder, options) =>
+                .ConfigureAppConfiguration((builder, config) =>
                 {
-                    options.AddJsonFile("secret.json", optional: true, reloadOnChange: false);
+                    config.AddJsonFile("secret.json", optional: true, reloadOnChange: false);
+                    config.AddEnvironmentVariables(prefix: "STRIPE_");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -95,7 +95,8 @@ namespace Shop.UI
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
 
-            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            StripeConfiguration.ApiKey = Configuration["STRIPE_SECRET_KEY"];
+            
 
             services.AddApplicationServices();
         }

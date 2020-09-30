@@ -17,11 +17,14 @@ using FluentValidation;
 using Shop.Application.Cart;
 using Shop.UI.ValidationContexts;
 using Npgsql;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 namespace Shop.UI
 {
     public class Startup
     {
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,28 +32,27 @@ namespace Shop.UI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
 
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["DefaultConnection"]));
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-            Console.Write("DatabaseURL INformation: ");
-            Console.WriteLine(databaseUrl);
-            if (databaseUrl != null)
+            services.AddDbContext<ApplicationDbContext>(options => 
             {
-                var connectionString = ApplicationDbContext.GetNpgsqlConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
-                Console.WriteLine(connectionString);
-                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-            }
-            else
-            {
-                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration["DefaultConnection"]));
-            }
+                var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+                var connectionString = GetNpgsqlConnectionString(databaseUrl);
+                options.UseNpgsql(connectionString);
+            });
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options => 
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services
                 .AddMvc()
@@ -62,23 +64,17 @@ namespace Shop.UI
                 .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-            });
-
             services.ConfigureApplicationCookie(options =>
             {
-                //options.Cookie.HttpOnly = true;
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
 
                 options.LoginPath = "/Accounts/Login";
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 //options.SlidingExpiration = true;
             });
+
+            services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddAuthorization(options =>
             {
@@ -96,12 +92,10 @@ namespace Shop.UI
             });
 
             StripeConfiguration.ApiKey = Configuration["STRIPE_SECRET_KEY"];
-            
 
             services.AddApplicationServices();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -134,6 +128,29 @@ namespace Shop.UI
                 endpoints.MapRazorPages();
             });
 
+        }
+
+        public string GetNpgsqlConnectionString(string databaseUrl)
+        {
+            var databaseUri = new Uri(databaseUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/')
+            };
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development") 
+            {
+                builder.Pooling = true;
+                builder.SslMode = SslMode.Require;
+                builder.TrustServerCertificate = true;
+            }
+
+            return builder.ToString();
         }
     }
 }

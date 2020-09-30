@@ -9,7 +9,7 @@ namespace Shop.Database
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-            : base(options) { }
+            : base(options) { Database.EnsureCreated(); }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -21,26 +21,6 @@ namespace Shop.Database
             base.OnModelCreating(builder);
             builder.Entity<OrderStock>()
                 .HasKey(x => new { x.StockId, x.OrderId });
-        }
-
-        public static string GetNpgsqlConnectionString(string databaseUrl)
-        {
-            var databaseUri = new Uri(databaseUrl);
-            var userInfo = databaseUri.UserInfo.Split(':');
-
-            var builder = new NpgsqlConnectionStringBuilder
-            {
-                Host = databaseUri.Host,
-                Port = databaseUri.Port,
-                Username = userInfo[0],
-                Password = userInfo[1],
-                Database = databaseUri.LocalPath.TrimStart('/'),
-                Pooling = true,
-                SslMode = SslMode.Require,
-                TrustServerCertificate = true
-            };
-
-            return builder.ToString();
         }
     }
 }

@@ -10,11 +10,15 @@ namespace Shop.UI.Controllers
 {
     public class AccountsController : Controller
     {
-        private SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AccountsController(SignInManager<IdentityUser> signInManager)
+        public AccountsController(
+            SignInManager<IdentityUser> signInManager, 
+            UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
         
         [HttpGet]
@@ -23,6 +27,22 @@ namespace Shop.UI.Controllers
             await _signInManager.SignOutAsync();
 
             return RedirectToPage("/Index");
+        }
+
+        public async Task<IActionResult> VerifyEmail(string userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return BadRequest();
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            if (result.Succeeded)
+            {
+                return RedirectToPage("/Accounts/Login");
+            }
+
+            return BadRequest();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Shop.Database
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-            : base(options) { Database.EnsureCreated(); }
+            : base(options) { }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }

@@ -54,14 +54,14 @@ namespace Shop.UI
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services
-                .AddMvc()
+            
+            services.AddControllersWithViews();
+            services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Admin");
                     options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
             services.ConfigureApplicationCookie(options =>
@@ -73,6 +73,15 @@ namespace Shop.UI
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 //options.SlidingExpiration = true;
             });
+
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Authentication_Google_ClientId"];
+                    options.ClientSecret = Configuration["Authentication_Google_ClientSecret"];
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                });
+
 
             services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 

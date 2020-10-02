@@ -32,12 +32,14 @@ namespace Shop.UI
                     {
                         var adminUser = new IdentityUser
                         {
-                            UserName = "Admin"
+                            UserName = "Admin",
+                            EmailConfirmed = true
                         };
 
                         var managerUser = new IdentityUser
                         {
-                            UserName = "Manager"
+                            UserName = "Manager",
+                            EmailConfirmed = true
                         };
 
                         userManager.CreateAsync(adminUser, "password").GetAwaiter().GetResult();
@@ -64,6 +66,7 @@ namespace Shop.UI
                 .ConfigureAppConfiguration((builder, config) =>
                 {
                     config.AddEnvironmentVariables(prefix: "STRIPE_");
+                    config.AddEnvironmentVariables(prefix: "Authentication_");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -44,7 +44,7 @@ namespace Shop.UI.Pages.Accounts
 
                 var link = Url.Action("VerifyEmail", "Accounts", new { userId = user.Id, code }, Request.Scheme, Request.Host.ToString());
 
-                await _emailService.SendAsync("test@test.com", "email verify", link);
+                await _emailService.SendAsync("test@test.com", "email verify", $"<a href=\"{link}\">Verify Email</a>", true);
 
                 return RedirectToPage("/Accounts/Login");
             }

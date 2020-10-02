@@ -3,10 +3,45 @@
 @{
 }
 
-
-<form method="post">
-    <input asp-for="Input.Username" />
-    <input asp-for="Input.Email" />
-    <input type="password" asp-for="Input.Password" />
-    <input type="submit" name="name" value="Sign in" />
-</form>
+<section class="hero is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                    <form method="post" class="box">
+                        <div class="field">
+                            <label for="" class="label">Username</label>
+                            <div class="control has-icons-left">
+                                <input class="input" placeholder="e.g. bobsmith" asp-for="Input.Username" required />
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="" class="label">Email</label>
+                            <div class="control has-icons-left">
+                                <input class="input" placeholder="e.g. bobsmith@gmail.com" asp-for="Input.Email" required />
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="" class="label">Password</label>
+                            <div class="control has-icons-left">
+                                <input type="password" placeholder="*******" class="input" asp-for="Input.Password" required>
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <input class="button is-success" type="submit" name="name" value="Register" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

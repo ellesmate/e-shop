@@ -342,3 +342,5 @@ healthchecksdb
 
 # MyIgnore
 secret.json
+docker-compose.yml
+docker-compose.yaml

@@ -21,17 +21,17 @@ jobs:
       run: heroku container:login
 
     - name: Build image
-      run: docker build -t {{ env.HEROKU_APP_NAME }} .
+      run: docker build -t ${{ env.HEROKU_APP_NAME }} .
     
     - name: Tag
-      run: docker tag {{ env.HEROKU_APP_NAME }} registry.heroku.com/{{ env.HEROKU_APP_NAME }}/web
+      run: docker tag ${{ env.HEROKU_APP_NAME }} registry.heroku.com/${{ env.HEROKU_APP_NAME }}/web
     
     - name: Push
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: docker push registry.heroku.com/{{ env.HEROKU_APP_NAME }}/web
+      run: docker push registry.heroku.com/${{ env.HEROKU_APP_NAME }}/web
     
     - name: Deploy
       env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release web -a {{ env.HEROKU_APP_NAME }}
+      run: heroku container:release web -a ${{ env.HEROKU_APP_NAME }}

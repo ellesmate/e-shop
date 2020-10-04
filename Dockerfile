@@ -5,6 +5,7 @@ WORKDIR /source
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY Shop.UI/*.csproj ./Shop.UI/
+COPY Shop.Application.Tests/*.csproj ./Shop.Application.Tests/
 COPY Shop.Application/*.csproj ./Shop.Application/
 COPY Shop.Database/*.csproj ./Shop.Database/
 COPY Shop.Domain/*.csproj ./Shop.Domain/
@@ -13,6 +14,7 @@ RUN dotnet restore
 # copy everything else and build app
 COPY Shop.UI/. ./Shop.UI/
 COPY Shop.Application/. ./Shop.Application/
+COPY Shop.Application/. ./Shop.Application.Tests/
 COPY Shop.Database/. ./Shop.Database/
 COPY Shop.Domain/. ./Shop.Domain/
 

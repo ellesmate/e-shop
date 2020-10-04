@@ -1,5 +1,5 @@
-﻿@page
-@model Shop.UI.Pages.Accounts.LoginModel
+@page
+@model Shop.UI.Pages.Accounts.RegisterModel
 @{
 }
 
@@ -8,12 +8,6 @@
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-                    <a class="button box has-icons-left" asp-action="ExternalLogin" asp-controller="Accounts">
-                        <span class="icon is-small is-left">
-                            <i class="fa fa-google"></i>
-                        </span>
-                        <span>Sign in with Google</span>
-                    </a>
                     <form method="post" class="box">
                         <div class="field">
                             <label for="" class="label">Username</label>
@@ -21,6 +15,15 @@
                                 <input class="input" placeholder="e.g. bobsmith" asp-for="Input.Username" required />
                                 <span class="icon is-small is-left">
                                     <i class="fa fa-user"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="" class="label">Email</label>
+                            <div class="control has-icons-left">
+                                <input class="input" placeholder="e.g. bobsmith@gmail.com" asp-for="Input.Email" required />
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-envelope"></i>
                                 </span>
                             </div>
                         </div>
@@ -34,29 +37,9 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label for="" class="checkbox">
-                                <input type="checkbox">
-                                Remember me
-                            </label>
-                        </div>
-                        <div class="field">
-                            <input class="button is-success" type="submit" name="name" value="Login" />
+                            <input class="button is-success" type="submit" name="name" value="Register" />
                         </div>
                     </form>
-
-
-                    <nav class="level">
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <a href="/Accounts/ResetPassword">Forgot Password?</a>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <a href="/Accounts/Register">Create an Account</a>
-                            </div>
-                        </div>
-                    </nav>
                 </div>
             </div>
         </div>

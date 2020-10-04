@@ -5,6 +5,7 @@ using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Shop.Database
@@ -30,11 +31,11 @@ namespace Shop.Database
         }
 
         private TResult GetOrder<TResult>(
-            Func<Order, bool> condition,
+            Expression<Func<Order, bool>> condition,
             Func<Order, TResult> selector)
         {
             return _ctx.Orders
-                .Where(x => condition(x))
+                .Where(condition)
                 .Include(x => x.OrderStocks)
                     .ThenInclude(x => x.Stock)
                         .ThenInclude(x => x.Product)

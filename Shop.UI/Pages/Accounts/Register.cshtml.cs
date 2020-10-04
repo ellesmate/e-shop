@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -35,7 +36,7 @@ namespace Shop.UI.Pages.Accounts
                 UserName = Input.Username,
                 Email = Input.Email
             };
-
+            
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded) 
@@ -44,7 +45,7 @@ namespace Shop.UI.Pages.Accounts
 
                 var link = Url.Action("VerifyEmail", "Accounts", new { userId = user.Id, code }, Request.Scheme, Request.Host.ToString());
 
-                await _emailService.SendAsync("test@test.com", "email verify", $"<a href=\"{link}\">Verify Email</a>", true);
+                await _emailService.SendAsync(Input.Email, "email verify", $"<a href=\"{link}\">Verify Email</a>", true);
 
                 return RedirectToPage("/Accounts/Login");
             }

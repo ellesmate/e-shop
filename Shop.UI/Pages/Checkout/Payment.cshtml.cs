@@ -17,7 +17,7 @@ namespace Shop.UI.Pages.Checkout
 
         public PaymentModel(IConfiguration config)
         {
-            PublicKey = config["STRIPE_PUBLIC_KEY"].ToString();
+            PublicKey = config.GetSection("STRIPE")["PUBLIC_KEY"];
         }
 
         public IActionResult OnGet([FromServices] GetCustomerInformation getCustomerInformation)

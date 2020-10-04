@@ -65,8 +65,8 @@ namespace Shop.UI
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((builder, config) =>
                 {
-                    config.AddEnvironmentVariables(prefix: "STRIPE_");
-                    config.AddEnvironmentVariables(prefix: "Authentication_");
+                    //config.AddEnvironmentVariables(prefix: "STRIPE_");
+                    //config.AddEnvironmentVariables(prefix: "Authentication_");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -38,7 +38,7 @@ namespace Shop.UI
 
             services.AddDbContext<ApplicationDbContext>(options => 
             {
-                var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+                var databaseUrl = Configuration["DATABASE_URL"];
                 var connectionString = GetNpgsqlConnectionString(databaseUrl);
                 options.UseNpgsql(connectionString);
             });
@@ -77,12 +77,15 @@ namespace Shop.UI
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = Configuration["Authentication_Google_ClientId"];
-                    options.ClientSecret = Configuration["Authentication_Google_ClientSecret"];
+                    var auth = Configuration.GetSection("Authentication");
+
+                    options.ClientId = auth["Google_ClientId"];
+                    options.ClientSecret = auth["Google_ClientSecret"];
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
-
+            var mailoptions = Configuration.GetSection("Email").Get<MailKitOptions>();
+            Console.WriteLine($"Mailoptions: {mailoptions.Server} {mailoptions.Port} {mailoptions.SenderName} {mailoptions.SenderEmail} {mailoptions.Account} {mailoptions.Security}");
             services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddAuthorization(options =>
@@ -100,7 +103,7 @@ namespace Shop.UI
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
 
-            StripeConfiguration.ApiKey = Configuration["STRIPE_SECRET_KEY"];
+            StripeConfiguration.ApiKey = Configuration.GetSection("STRIPE")["SECRET_KEY"];
 
             services.AddApplicationServices();
         }

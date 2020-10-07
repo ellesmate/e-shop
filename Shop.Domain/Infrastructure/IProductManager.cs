@@ -13,6 +13,6 @@ namespace Shop.Domain.Infrastructure
 
         TResult GetProductById<TResult>(int id, Func<Product, TResult> selector);
         TResult GetProductByName<TResult>(string name, Func<Product, TResult> selector);
-        IEnumerable<TResult> GetProductsWithStock<TResult>(Func<Product, TResult> selector);
+        IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector);
     }
 }

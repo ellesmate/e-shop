@@ -57,10 +57,11 @@ namespace Shop.Database
                 .FirstOrDefault();
         }
 
-        public IEnumerable<TResult> GetProductsWithStock<TResult>(Func<Product, TResult> selector)
+        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector)
         {
             return _ctx.Products
                 .Include(x => x.Stock)
+                .Include(x => x.Images)
                 .Select(selector)
                 .ToList();
         }

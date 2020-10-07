@@ -4,6 +4,25 @@
     ViewData["Title"] = "Home page";
 }
 
+<style>
+    .card.in-stock:hover .image.front {
+        opacity: 0;
+        transition: opacity 360ms ease-out;
+    }
+
+    .card-image .image.front {
+        transition: opacity 180ms ease-in;
+        z-index: 2;
+    }
+
+    .card-image .image.back {
+        z-index: 1;
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 100%;
+    }
+</style>
 
 <div class="section">
     <div class="columns is-multiline is-mobile">
@@ -12,44 +31,54 @@
             foreach (var p in Model.Products)
             {
                 <div class="column is-3-desktop is-4-tablet is-12-mobile">
-                    <a asp-page="Product" asp-route-name="@p.Name.Replace(" ", "-")">
-                        <div class="card">
-                            <div class="card-image">
-                                <figure class="image is-4by3">
-                                    <img src="~/images/candy.jpg" />
+                    <a class="card in-stock" asp-page="Product" asp-route-name="@p.Name.Replace(" ", "-")">
+                        <div class="card-image">
+                            @if (p.Images.Count == 1)
+                            {
+                                <figure class="image is-square">
+                                    <img src="@p.Images[0]" alt="">
                                 </figure>
-                            </div>
-                            <div class="card-content">
+                            }
+                            else
+                            {
+                                <figure class="image front is-square">
+                                    <img src="@p.Images[0]" alt="">
+                                </figure>
+                                <figure class="image back is-square">
+                                    <img src="@p.Images[1]" alt="">
+                                </figure>
+                            }
+                        </div>
+                        <div class="card-content">
 
-                                @{ 
-                                    string cssClass = "";
-                                    string message = "";
+                            @{
+                                string cssClass = "";
+                                string message = "";
 
-                                    if (p.StockCount == 0)
-                                    {
-                                        cssClass = "is-danger";
-                                        message = "Out of Stock";
-                                    }
-                                    else if (p.StockCount <= 10)
-                                    {
-                                        cssClass = "is-warning";
-                                        message = "Low on Stock";
-                                    }
-                                }
-                                @if (p.StockCount <= 10)
+                                if (p.StockCount == 0)
                                 {
-                                    <div class="notification is-paddingless has-text-centered @cssClass">
-                                        @message
-                                    </div>
+                                    cssClass = "is-danger";
+                                    message = "Out of Stock";
                                 }
+                                else if (p.StockCount <= 10)
+                                {
+                                    cssClass = "is-warning";
+                                    message = "Low on Stock";
+                                }
+                            }
+                            @if (p.StockCount <= 10)
+                            {
+                                <div class="notification is-paddingless has-text-centered @cssClass">
+                                    @message
+                                </div>
+                            }
 
-                                <p class="title is-size-5">
-                                    @p.Name @p.Value
-                                </p>
-                                <p class="subtitle">
-                                    @p.Description
-                                </p>
-                            </div>
+                            <p class="title is-size-5">
+                                @p.Name @p.Value
+                            </p>
+                            <p class="subtitle">
+                                @p.Description
+                            </p>
                         </div>
                     </a>
                 </div>

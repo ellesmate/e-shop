@@ -17,7 +17,7 @@ namespace Shop.Application.StockAdmin
         public IEnumerable<ProductViewModel> Do()
         {
             return _productManager
-                .GetProductsWithStock(x => new ProductViewModel
+                .GetProducts(x => new ProductViewModel
                 {
                     Id = x.Id,
                     Description = x.Description,

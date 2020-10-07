@@ -11,7 +11,7 @@ namespace Shop.Domain.Models
         public string Description { get; set; }
         public decimal Value { get; set; }
 
+        public List<Image> Images { get; set; } = new List<Image>();
         public ICollection<Stock> Stock { get; set; }
-
     }
 }

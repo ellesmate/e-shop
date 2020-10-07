@@ -1,6 +1,8 @@
 ﻿using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
@@ -21,7 +23,8 @@ namespace Shop.Application.ProductsAdmin
             {
                 Name = vm.Name,
                 Description = vm.Description,
-                Value = vm.Value
+                Value = vm.Value,
+                Images = vm.Images
             };
 
             if (await _productManager.CreateProduct(product) <= 0)
@@ -42,6 +45,7 @@ namespace Shop.Application.ProductsAdmin
             public string Name { get; set; }
             public string Description { get; set; }
             public decimal Value { get; set; }
+            public List<Image> Images { get; set; } = new List<Image>();
         }
         public class Response
         {

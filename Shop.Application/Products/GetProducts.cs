@@ -17,12 +17,15 @@ namespace Shop.Application.Products
         public IEnumerable<ProductViewModel> Do()
         {
             return _productManager
-                .GetProductsWithStock(x => new ProductViewModel
+                .GetProducts(x => new ProductViewModel
                 {
                     Name = x.Name,
                     Description = x.Description,
                     Value = x.Value.GetValueString(),
-                    StockCount = x.Stock.Sum(y => y.Qty)
+                    StockCount = x.Stock.Sum(y => y.Qty),
+                    Images = x.Images.Select(y => y.Path)
+                        .Take(2)
+                        .ToList()
                 });
         }
         public class ProductViewModel
@@ -31,6 +34,7 @@ namespace Shop.Application.Products
             public string Description { get; set; }
             public string Value { get; set; }
             public int StockCount { get; set; }
+            public List<string> Images { get; set; }
         }
     }
 }

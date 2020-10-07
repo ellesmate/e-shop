@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Shop.Domain.Models;
 using Shop.Domain.Infrastructure;
+using System.Linq;
 
 namespace Shop.Application.Cart
 {
@@ -39,6 +40,7 @@ namespace Shop.Application.Cart
                 ProductId = stock.ProductId,
                 ProductName = stock.Product.Name,
                 StockId = stock.Id,
+                Images = stock.Product.Images.Select(x => x.Path).ToList(),
                 Qty = request.Qty,
                 Value = stock.Product.Value
             };

@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Shop.Domain.Models
 {
     public class CartProduct
@@ -6,6 +8,7 @@ namespace Shop.Domain.Models
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public decimal Value { get; set; }
+        public List<string> Images { get; set; }
         public int StockId { get; set; }
         public int Qty { get; set; }
     }

@@ -19,6 +19,7 @@ namespace Shop.Application.Cart
             public string Name { get; set; }
             public string Value { get; set; }
             public decimal RealValue { get; set; }
+            public List<string> Images { get; set; }
             public int Qty { get; set; }
             public int StockId { get; set; }
         }
@@ -31,6 +32,7 @@ namespace Shop.Application.Cart
                     Name = x.ProductName,
                     Value = x.Value.GetValueString(),
                     RealValue = x.Value,
+                    Images = x.Images,
                     StockId = x.StockId,
                     Qty = x.Qty
                 });

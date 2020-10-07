@@ -17,8 +17,16 @@ namespace Shop.Database
             _ctx = ctx;
         }
 
+        private void UpdateSlug(Product product)
+        {
+            var slug = product.Name.Replace(' ', '-');
+            product.Slug = slug;
+        }
+
         public Task<int> CreateProduct(Product product)
         {
+            UpdateSlug(product);
+
             _ctx.Products.Add(product);
 
             return _ctx.SaveChangesAsync();
@@ -33,6 +41,8 @@ namespace Shop.Database
         }
         public Task<int> UpdateProduct(Product product)
         {
+            UpdateSlug(product);
+
             _ctx.Products.Update(product);
 
             return _ctx.SaveChangesAsync();
@@ -46,21 +56,23 @@ namespace Shop.Database
                 .FirstOrDefault();
         }
 
-        public TResult GetProductByName<TResult>(
-            string name, 
+        public TResult GetProductBySlug<TResult>(
+            string slug, 
             Func<Product, TResult> selector)
         {
             return _ctx.Products
                 .Include(x => x.Stock)
-                .Where(x => x.Name == name)
+                .Include(x => x.Images)
+                .Where(x => x.Slug == slug)
                 .Select(selector)
                 .FirstOrDefault();
         }
 
-        public IEnumerable<TResult> GetProductsWithStock<TResult>(Func<Product, TResult> selector)
+        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector)
         {
             return _ctx.Products
                 .Include(x => x.Stock)
+                .Include(x => x.Images)
                 .Select(selector)
                 .ToList();
         }

@@ -1,13 +1,16 @@
-﻿var app = new Vue({
+﻿const url = '/products'
+
+var app = new Vue({
     el: '#app',
     data: {
         editing: false,
         loading: false,
-        productModel: {
+        form: {
             id: 0,
             name: "Product Name",
             description: "Product Description",
-            value: 1.99
+            value: 1.99,
+            images: []
         },
         objectIndex: 0,
         products: []
@@ -16,13 +19,27 @@
         this.getProducts();
     },
     methods: {
+        addImage(event) {
+            const file = event.target.files[0];
+            this.form.images.push(file)
+        },
+        moveImageUp(index) {
+            const image = this.form.images[index]
+            this.form.images.splice(index, 1)
+            this.form.images.splice(index - 1, 0, image)
+        },
+        moveImageDown(index) {
+            const image = this.form.images[index]
+            this.form.images.splice(index, 1)
+            this.form.images.splice(index + 1, 0, image)
+        },
         getProduct(id) {
             this.loading = true;
-            axios.get('/products/' + id)
+            axios.get(url + '/' + id)
                 .then(res => {
                     console.log(res);
                     var product = res.data;
-                    this.productModel = {
+                    this.form = {
                         id: product.id,
                         name: product.name,
                         description: product.description,
@@ -38,7 +55,7 @@
         },
         getProducts() {
             this.loading = true;
-            axios.get('/products')
+            axios.get(url)
                 .then(res => {
                     console.log(res);
                     this.products = res.data;
@@ -52,7 +69,17 @@
         },
         createProduct() {
             this.loading = true;
-            axios.post('/products', this.productModel)
+            const form = new FormData();
+
+            form.append('form.name', this.form.name);
+            form.append('form.description', this.form.description);
+            form.append('form.value', this.form.value);
+
+            for (let i = 0; i < this.form.images.length; i++) {
+                form.append('form.images', this.form.images[i])
+            }
+
+            axios.post(url, form, { headers: {'Content-Type': 'multipart/form-data' }} )
                 .then(res => {
                     console.log(res.data);
                     this.products.push(res.data);
@@ -67,7 +94,7 @@
         },
         updateProduct() {
             this.loading = true;
-            axios.put('/products', this.productModel)
+            axios.put(url, this.form)
                 .then(res => {
                     console.log(res.data);
                     this.products.splice(this.objectIndex, 1, res.data);
@@ -82,7 +109,7 @@
         },
         deleteProduct(id, index) {
             this.loading = true;
-            axios.delete('/products/' + id)
+            axios.delete(url + '/' + id)
                 .then(res => {
                     console.log(res.data);
                     this.products.splice(index, 1);
@@ -96,7 +123,7 @@
         },
         newProduct() {
             this.editing = true;
-            this.productModel.id = 0;
+            this.form.id = 0;
         },
         editProduct(id, index) {
             this.objectIndex = index;
@@ -108,6 +135,8 @@
         }
     },
     computed: {
-
+        fileImages() {
+            return this.form.images.map(x => URL.createObjectURL(x));
+        }
     }
 })

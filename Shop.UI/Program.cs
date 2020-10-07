@@ -63,10 +63,12 @@ namespace Shop.UI
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((builder, config) =>
+                .ConfigureAppConfiguration((hostContext, builder) =>
                 {
-                    //config.AddEnvironmentVariables(prefix: "STRIPE_");
-                    //config.AddEnvironmentVariables(prefix: "Authentication_");
+                    if (hostContext.HostingEnvironment.IsDevelopment())
+                    {
+                        builder.AddUserSecrets<Program>();
+                    }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

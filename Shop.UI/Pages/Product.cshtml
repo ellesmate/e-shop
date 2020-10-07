@@ -1,18 +1,31 @@
-﻿@page "{name}"
+﻿@page "{slug}"
 @model Shop.UI.Pages.ProductModel
 @{
 }
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.4/dist/css/bulma-carousel.min.css">
 
 <div class="hero">
     <div class="hero-body">
         <div class="container">
             <div class="columns">
                 <div class="column is-6">
-                    <figure class="image">
-                        <img src="~/images/candy.jpg" />
-                    </figure>
+                    <section class="section">
+                        <div class="container" style="overflow:hidden">
+                            <div id="carousel-demo" class="carousel">
+
+                                @foreach (var image in Model.Product.Images)
+                                {
+                                    <div class="carousel-item">
+                                        <figure class="image is-square">
+                                            <img src="@image" alt="">
+                                        </figure>
+                                    </div>
+                                }
+                            </div>
+                        </div>  
+                    </section>
                 </div>
+
                 <div class="column is-6">
                     <section class="content">
                         <p class="title">@Model.Product.Name</p>
@@ -83,12 +96,18 @@
                         </footer>
                     </section>
                 </div>
-            </div>
+             </div>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.4/dist/js/bulma-carousel.min.js"></script>
 <script>
+    bulmaCarousel.attach('#carousel-demo', {
+        slidesToScroll: 1,
+        slidesToShow: 1,
+        loop: true,
+    });
 
     var showLowStock = function (id) {
         var stockToShow = document.getElementById('low-stock-' + id);

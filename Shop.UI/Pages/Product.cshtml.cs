@@ -14,10 +14,10 @@ namespace Shop.UI.Pages
         public GetProduct.ProductViewModel Product { get; set; }
 
         public async Task<IActionResult> OnGet(
-            string name, 
+            string slug, 
             [FromServices] GetProduct getProduct)
         {
-            Product = await getProduct.Do(name.Replace("-", " "));
+            Product = await getProduct.Do(slug);
             if (Product == null)
                 return RedirectToPage("Index");
             else

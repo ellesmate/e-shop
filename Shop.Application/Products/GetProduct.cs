@@ -1,4 +1,5 @@
 ﻿using Shop.Domain.Infrastructure;
+using Shop.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,17 +18,18 @@ namespace Shop.Application.Products
             _productManager = productManager;
         }
 
-        public async Task<ProductViewModel> Do(string name)
+        public async Task<ProductViewModel> Do(string slug)
         {
             await _stockManager.RetrieveExpiredStockOnHold();
 
-
             return _productManager
-                .GetProductByName(name, x => new ProductViewModel
+                .GetProductBySlug(slug, x => new ProductViewModel
                 {
                     Name = x.Name,
                     Description = x.Description,
                     Value = x.Value.GetValueString(),
+                    Slug = x.Slug,
+                    Images = x.Images.Select(y => y.Path).ToList(),
 
                     Stock = x.Stock.Select(y => new StockViewModel
                     {
@@ -41,7 +43,9 @@ namespace Shop.Application.Products
         {
             public string Name { get; set; }
             public string Description { get; set; }
+            public string Slug { get; set; }
             public string Value { get; set; }
+            public List<string> Images { get; set; }
             public IEnumerable<StockViewModel> Stock { get; set; }
         }
 

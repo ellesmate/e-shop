@@ -25,11 +25,13 @@ namespace Shop.UI
     public class Startup
     {
         
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
+            WebHostEnvironment = webHostEnvironment;
             Configuration = configuration;
         }
 
+        public IWebHostEnvironment WebHostEnvironment { get; }
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
@@ -84,8 +86,6 @@ namespace Shop.UI
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
-            var mailoptions = Configuration.GetSection("Email").Get<MailKitOptions>();
-            Console.WriteLine($"Mailoptions: {mailoptions.Server} {mailoptions.Port} {mailoptions.SenderName} {mailoptions.SenderEmail} {mailoptions.Account} {mailoptions.Security}");
             services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddAuthorization(options =>
@@ -155,7 +155,7 @@ namespace Shop.UI
                 Database = databaseUri.LocalPath.TrimStart('/')
             };
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development") 
+            if (!WebHostEnvironment.IsDevelopment())
             {
                 builder.Pooling = true;
                 builder.SslMode = SslMode.Require;

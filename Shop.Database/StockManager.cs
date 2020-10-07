@@ -49,6 +49,7 @@ namespace Shop.Database
         {
             return _ctx.Stock
                 .Include(x => x.Product)
+                    .ThenInclude(x => x.Images)
                 .FirstOrDefault(x => x.Id == stockId);
         }
 

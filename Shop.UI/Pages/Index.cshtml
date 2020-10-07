@@ -31,7 +31,7 @@
             foreach (var p in Model.Products)
             {
                 <div class="column is-3-desktop is-4-tablet is-12-mobile">
-                    <a class="card in-stock" asp-page="Product" asp-route-name="@p.Name.Replace(" ", "-")">
+                    <a class="card in-stock" asp-page="Product" asp-route-slug="@p.Slug">
                         <div class="card-image">
                             @if (p.Images.Count == 1)
                             {

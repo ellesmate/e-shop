@@ -22,6 +22,7 @@ namespace Shop.Application.Products
                     Name = x.Name,
                     Description = x.Description,
                     Value = x.Value.GetValueString(),
+                    Slug = x.Slug,
                     StockCount = x.Stock.Sum(y => y.Qty),
                     Images = x.Images.Select(y => y.Path)
                         .Take(2)
@@ -33,6 +34,7 @@ namespace Shop.Application.Products
             public string Name { get; set; }
             public string Description { get; set; }
             public string Value { get; set; }
+            public string Slug { get; set; }
             public int StockCount { get; set; }
             public List<string> Images { get; set; }
         }

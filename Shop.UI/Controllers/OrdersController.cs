@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Shop.UI.Controllers
 {
     [Route("[controller]")]
-    [Authorize(Policy = "Manager")]
+    [Authorize(Policy = ShopConstants.Policies.Manager)]
     public class OrdersController : Controller
     {
         private ApplicationDbContext _ctx;

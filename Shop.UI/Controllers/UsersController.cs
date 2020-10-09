@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Shop.UI.Controllers
 {
     [Route("[controller]")]
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = ShopConstants.Policies.Admin)]
     public class UsersController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -22,12 +22,13 @@ namespace Shop.UI.Controllers
         {
             var managerUser = new IdentityUser
             {
-                UserName = vm.Username
+                UserName = vm.Username,
+                EmailConfirmed = true
             };
 
             await _userManager.CreateAsync(managerUser, "password");
 
-            var managerClaim = new Claim("Role", "Manager");
+            var managerClaim = new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Manager);
 
             await _userManager.AddClaimAsync(managerUser, managerClaim);
 

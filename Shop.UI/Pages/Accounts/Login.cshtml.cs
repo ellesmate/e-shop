@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,13 +24,17 @@ namespace Shop.UI.Pages.Accounts
         {
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost(string returnUrl)
         {
             var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, false, false);
             
             if (result.Succeeded)
             {
-                return RedirectToPage("/Admin/Index");
+                if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                return RedirectToPage("/");
             }
             else
             {

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,7 @@ namespace Shop.UI.Pages.Accounts
 
             if (result.Succeeded) 
             {
+
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var link = Url.Action("VerifyEmail", "Accounts", new { userId = user.Id, code }, Request.Scheme, Request.Host.ToString());

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using Shop.Database;
 
 namespace Shop.UI
@@ -78,6 +79,12 @@ namespace Shop.UI
                         webBuilder.UseUrls(new string[] { $"http://*:{port}" });
                     }
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureLogging((hostingContext, logging)=>
+                {
+                    logging.ClearProviders();
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                })
+                .UseNLog();
     }
 }

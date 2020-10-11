@@ -1,0 +1,159 @@
+﻿@page "{id}"
+@model Shop.UI.Pages.Support.ChatModel
+@{
+}
+
+
+<style>
+    .chat-body {
+        background-color: #eee;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 1rem;
+        overflow: auto;
+    }
+
+    .message {
+        display: flex;
+        flex-direction: row;
+        margin-top: 0.2rem;
+    }
+
+        .message:first-child {
+            margin-top: auto;
+        }
+
+        .message > * {
+            padding: 0.2rem;
+        }
+
+        .message > header {
+            font-weight: bold;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .message > p {
+            margin: 0;
+            flex-grow: 5;
+        }
+
+        .message > footer {
+            min-width: 60px;
+            text-align: center;
+        }
+
+    .chat-input {
+        background-color: #443554;
+        min-height: 70px;
+        max-height: 70px;
+        z-index: 25;
+        box-shadow: 0 -1px 2px 0 #333;
+        display: flex;
+        flex-direction: row;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+        .chat-input > input {
+            flex-grow: 2;
+        }
+
+        .chat-input > button {
+            flex-grow: 1;
+        }
+</style>
+
+<div class="chat-body">
+    @foreach (var message in Model.Chat.Messages)
+    {
+        <div class="message">
+            <header>@message.Name:</header>
+            <p>@message.Text</p>
+            <footer>@message.Timestamp</footer>
+        </div>
+    }
+</div>
+
+<form class="chat-input" onsubmit="sendMessage(event)" method="post">
+    <input type="hidden" name="roomId" value="@Model.Chat.Id" />
+    <input type="text" name="message" id="message-input" />
+    <button type="submit">Send</button>
+</form>
+
+
+@section scripts {
+    <script src="~/lib/signalr.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+        var _connectionId = '';
+
+        connection.on("ReceiveMessage", function (data) {
+            console.log("received");
+
+            var message = document.createElement("div");
+            message.classList.add("message");
+
+            var header = document.createElement("header");
+            header.appendChild(document.createTextNode(data.name + ':'));
+
+            var p = document.createElement("p");
+            p.appendChild(document.createTextNode(data.text));
+
+            var footer = document.createElement("footer");
+            footer.appendChild(document.createTextNode(data.timestamp));
+
+            message.appendChild(header);
+            message.appendChild(p);
+            message.appendChild(footer);
+
+            console.log(data)
+            document.querySelector(".chat-body").append(message); 
+        });
+
+        var joinRoom = function () {
+            var url = '/Chat/JoinRoom/' + _connectionId + '/@Model.Chat.Id';
+            axios.post(url, null)
+                .then(function (res) {
+                    console.log("Room Joined!", res);
+                })
+                .catch(err => {
+                    console.log("Failed to join room!", err);
+                });
+        }
+
+        connection.start()
+            .then(function () {
+                connection.invoke('getConnectionId')
+                    .then(function (connectionId) {
+                        _connectionId = connectionId;
+                        joinRoom();
+                    })
+            })
+            .catch(function (err) {
+
+            })
+
+        var sendMessage = function (event) {
+            event.preventDefault();
+
+            var data = new FormData(event.target);
+            document.getElementById('message-input').value = '';
+
+            axios.post('/Chat/SendMessage', data)
+                .then(function (res) {
+                    console.log("message Send!", res);
+                })
+                .catch(err => {
+                    console.log("message Send!", err);
+                });
+        }
+
+
+    </script>
+}

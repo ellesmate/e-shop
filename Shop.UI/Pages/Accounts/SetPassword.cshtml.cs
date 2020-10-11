@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Shop.Domain.Models;
 
 namespace Shop.UI.Pages.Accounts
 {
     public class SetPasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public SetPasswordModel(UserManager<IdentityUser> userManager)
+        public SetPasswordModel(UserManager<User> userManager)
         {
             _userManager = userManager;
         }

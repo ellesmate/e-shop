@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Shop.Domain.Models;
+using Shop.UI.Hubs;
 
 namespace Shop.UI
 {
@@ -49,7 +51,7 @@ namespace Shop.UI
                 options.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => 
+            services.AddIdentity<User, IdentityRole>(options => 
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;
@@ -68,6 +70,7 @@ namespace Shop.UI
                     options.Conventions.AuthorizeFolder("/Admin", ShopConstants.Policies.Manager);
                     options.Conventions.AuthorizePage("/Admin/ConfigureUsers", ShopConstants.Policies.Admin);
                     options.Conventions.AuthorizeFolder("/Checkout");
+                    options.Conventions.AuthorizeFolder("/Support");
                     //options.Conventions.AllowAnonymousToPage("/Admin/Login");
                 })
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
@@ -112,6 +115,8 @@ namespace Shop.UI
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
 
+            services.AddSignalR();
+
             StripeConfiguration.ApiKey = Configuration.GetSection("STRIPE")["SECRET_KEY"];
 
             services.AddApplicationServices();
@@ -142,11 +147,11 @@ namespace Shop.UI
 
             app.UseSession();
 
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
 
         }

@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shop.UI</title>
+    @*<link href="~/lib/bulma.min.css" rel="stylesheet" />*@
+</head>
+<body>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #342742;
+            height: 50px;
+            z-index: 100;
+            box-shadow: 0 1px 2px 0 #333;
+        }
+
+        .main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .side-menu {
+            background-color: #443554;
+            min-width: 100px;
+            max-width: 100px;
+            z-index: 50;
+            box-shadow: 1px 0 2px 0 #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-buttom {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0.5rem 1rem;
+            height: 68px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px 1px #333;
+            background-color: #57446b;
+            text-align: center;
+        }
+
+            .room-buttom > strong {
+                font-size: 36px;
+            }
+
+            .room-buttom:hover {
+                box-shadow: 0 1px 3px 1px #222;
+            }
+
+        .chat {
+            background-color: #eee;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            min-height: 100vh;
+            min-width: 100vw;
+            z-index: 200;
+            top: 0;
+            left: 0;
+            background-color: rgba(0.2, 0.2, 0.2, 0.8);
+        }
+
+            .modal.active {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        .modal-body > .close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            margin-top: 0;
+        }
+
+        .modal-body {
+            position: relative;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            background-color: #5c4773;
+            padding: 1rem;
+        }
+
+            .modal-body > * {
+                margin-top: 0.75rem;
+            }
+
+            .modal-body > header {
+                color: #fff;
+                font-size: 24px;
+            }
+
+            .modal-body > div > input {
+                width: 100%;
+            }
+
+            .modal-body > footer {
+                text-align: center;
+            }
+    </style>
+
+    <div class="navbar">
+
+    </div>
+
+    <div class="main">
+        <vc:room></vc:room>
+        <div class="chat">
+            @RenderBody()
+        </div>
+
+        <div class="modal" id="create-room-modal">
+            <form asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Context.Request.Path" class="modal-body">
+                <button type="button" class="close" onclick="closeModal()">X</button>
+                <header>Create Room</header>
+                <div>
+                    <input name="name" />
+                </div>
+                <footer>
+                    <button>Create</button>
+                </footer>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        var createRoomBtn = document.getElementById('create-room-btn');
+        var createRoomModal = document.getElementById('create-room-modal')
+
+        createRoomBtn.addEventListener('click', function () {
+            createRoomModal.classList.add('active');
+        });
+
+        var closeModal = function () {
+            createRoomModal.classList.remove('active');
+        }
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

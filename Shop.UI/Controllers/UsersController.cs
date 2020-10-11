@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shop.Domain.Models;
 using Shop.UI.ViewModels.Admin;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,16 +12,16 @@ namespace Shop.UI.Controllers
     [Authorize(Policy = ShopConstants.Policies.Admin)]
     public class UsersController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public UsersController(UserManager<IdentityUser> userManager)
+        public UsersController(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
         public async Task<IActionResult> CreateUser([FromBody] CreateUserViewModel vm)
         {
-            var managerUser = new IdentityUser
+            var managerUser = new User
             {
                 UserName = vm.Username,
                 EmailConfirmed = true

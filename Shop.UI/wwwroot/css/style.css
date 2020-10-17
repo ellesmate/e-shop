@@ -1,0 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    flex-wrap: wrap;
+}
+
+.site-navbar-top {
+    width: 100%;
+    display: inline;
+    border-bottom: 1px solid #f3f3f4;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #dee2e6!important;
+}
+
+.site-navbar-top > .section > .container > .columns {
+    align-items: center;
+}
+
+.border-0 {
+    border: 0!important;
+    box-shadow: none;
+}
+
+#navbar-toggle-menu {
+    justify-content: center;
+}
+
+.site-logo a {
+    text-transform: uppercase;
+    color: #25262a;
+    letter-spacing: .2em;
+    font-size: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 2px solid #25262a;
+}
+
+.hero.has-background {
+
+    position: relative;
+    overflow: hidden;
+}
+.hero-background {
+    position: absolute;
+    object-fit: cover;
+    object-position: center center;
+    /* width: 100%; */
+    height: 100%;
+}
+.hero-background .is-transparent {
+    opacity: 0.3;
+}
+
+.is-purple-background {
+    background-color: #7971ea;
+    border-color: #7971ea;
+}
+
+.is-purple-color {
+    color: #7971ea;
+}
+
+.block-2-item {
+    display: block;
+    position: relative;
+}
+
+.block-2-item::before {
+    z-index: 1;
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: linear-gradient(to bottom, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.8) 99%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.block-2-item > figure {
+    overflow: hidden;
+}
+
+.block-2-item > figure > img{
+    transition: .3s all ease-in-out;
+}
+
+.block-2-item:hover > figure > img {
+    transform: scale(1.1);
+}
+
+.block-2-item > .text {
+    z-index: 1000;
+    position: absolute;
+    bottom: 0;
+    padding-left: 20px;
+    width: 100%;
+}
+
+.block-2-item > .text > span {
+    font-size: 12px;
+    letter-spacing: .1em;
+    font-weight: 900;
+    color: #fff;
+}
+
+.block-2-item > .text > h3 {
+    font-size: 40px;
+    color: #fff;
+}
+
+/* cart.css */
+
+td, th {
+    padding: 20px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.table-image {
+    width: 128px
+}
+
+/* shop.css */
+
+.card.in-stock:hover .image.front {
+    opacity: 0;
+    transition: opacity 360ms ease-out;
+}
+
+.card-image .image.front {
+    transition: opacity 180ms ease-in;
+    z-index: 2;
+}
+
+.card-image .image.back {
+    z-index: 1;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}

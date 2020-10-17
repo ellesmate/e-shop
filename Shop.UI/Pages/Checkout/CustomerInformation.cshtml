@@ -3,7 +3,7 @@
 @{
 }
 
-<div class="columns">
+@*<div class="columns">
     <div class="column is-6">
 
         <form method="post">
@@ -80,4 +80,104 @@
     <div class="column is-6">
         <vc:cart view="Default"></vc:cart>
     </div>
-</div>
+</div>*@
+
+
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-5">
+                <p class="title">Billing Details</p>
+                <div class="box p-6">
+                    <form method="post">
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">First Name</label>
+                                        <input class="input" asp-for="CustomerInformation.FirstName" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.FirstName"></span>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">Last Name</label>
+                                        <input class="input" asp-for="CustomerInformation.LastName" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.LastName"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label class="label">Address1</label>
+                                <input class="input" asp-for="CustomerInformation.Address1" placeholder="Street address" />
+                            </div>
+                            <span class="help is-danger" asp-validation-for="CustomerInformation.Address1"></span>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" asp-for="CustomerInformation.Address2" placeholder="Apartment, suite, unit etc. (optional)" />
+                            </div>
+                        </div>
+
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">City</label>
+                                        <input class="input" asp-for="CustomerInformation.City" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.City"></span>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">Postcode</label>
+                                        <input class="input" asp-for="CustomerInformation.PostCode" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.PostCode"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="columns">
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">Email</label>
+                                        <input class="input" asp-for="CustomerInformation.Email" placeholder="Email" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.Email"></span>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label">Phone</label>
+                                        <input class="input" asp-for="CustomerInformation.PhoneNumber" placeholder="Phone Number" />
+                                    </div>
+                                    <span class="help is-danger" asp-validation-for="CustomerInformation.PhoneNumber"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <button class="button is-link is-uppercase is-fullwidth mt-5" type="submit">Place order</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <div class="column is-5">
+                <p class="title">Your Order</p>
+                <div class="box p-6">
+                    <vc:cart view="Default"></vc:cart>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

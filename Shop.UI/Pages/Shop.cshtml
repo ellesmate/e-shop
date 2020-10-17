@@ -1,0 +1,351 @@
+﻿@page
+@model Shop.UI.Pages.ShopModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3">
+                <div class="box p-4">
+                    <h2 class="mb-3 is-uppercase">Categories</h2>
+                    <ul>
+                        <li class="mb-1"><a>Acoustic</a></li>
+                        <li class="mb-1"><a>Electric</a></li>
+                        <li class="mb-1"><a>Bass</a></li>
+                    </ul>
+                </div>
+
+                <div class="box p-4">
+                    <div class="mb-4">
+                        <h2 class="mb-3 is-uppercase">Filter by price</h2>
+
+                        <div class="is-flex">
+                            <input class="input" type="number" placeholder="From">
+                            <input class="input" type="number" placeholder="To">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h2 class="mb-3 is-uppercase">Size</h2>
+                        <ul>
+                            <li>
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    Small
+                                </label>
+                            </li>
+                            <li>
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    Medium
+                                </label>
+                            </li>
+                            <li>
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    Large
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="column is-9">
+                <div class="columns is-multiline">
+                    
+                    @foreach (var product in Model.Products)
+                    {
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card in-stock">
+                            <div class="card-image">
+                                <a asp-page="Product" asp-route-slug="@product.Slug">
+
+                                    @if (product.Images.Count == 1)
+                                    {
+                                        <figure class="image is-square">
+                                            <img src="@product.Images[0]" alt="">
+                                        </figure>
+                                    }
+                                    else
+                                    {
+                                        <figure class="image front is-square">
+                                            <img src="@product.Images[0]" alt="">
+                                        </figure>
+                                        <figure class="image back is-square">
+                                            <img src="@product.Images[1]" alt="">
+                                        </figure>
+                                    }
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a asp-page="Product" asp-route-slug="@product.Slug">@product.Name</a></h4>
+                                    <p class="mb-1">@product.Description</p>
+                                    <p><strong>@product.Value</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-square">
+                                    <a href="detail.html">
+                                        <img src="images/guitar_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="detail.html">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-square">
+                                    <a href="detail.html">
+                                        <img src="images/guitar_2.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="detail.html">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-square">
+                                    <a href="detail.html">
+                                        <img src="images/guitar_3.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="detail.html">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-square">
+                                    <a href="detail.html">
+                                        <img src="images/guitar_4.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="detail.html">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/shoe_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/cloth_2.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/cloth_3.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/shoe_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/cloth_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/shoe_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/cloth_2.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/cloth_3.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="#">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-4-desktop is-6-tablet">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <a href="detail.html">
+                                        <img src="images/shoe_1.jpg" alt="">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="content has-text-centered">
+                                    <h4 class="mb-1"><a href="detail.html">Tank Top</a></h4>
+                                    <p class="mb-1">Finding perfect t-shirt</p>
+                                    <p><strong>$50</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <nav class="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
+                    <!-- <a class="pagination-previous">Previous</a>
+                    <a class="pagination-next">Next page</a> -->
+                    <ul class="pagination-list">
+                        <li><a class="pagination-link" aria-label="Goto previous"><</a></li>
+                        <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
+                        <li><span class="pagination-ellipsis">&hellip;</span></li>
+                        <li><a class="pagination-link" aria-label="Goto page 45">45</a></li>
+                        <li><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
+                        <li><a class="pagination-link" aria-label="Goto page 47">47</a></li>
+                        <li><span class="pagination-ellipsis">&hellip;</span></li>
+                        <li><a class="pagination-link" aria-label="Goto page 86">86</a></li>
+                        <li><a class="pagination-link" aria-label="Goto next">></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>

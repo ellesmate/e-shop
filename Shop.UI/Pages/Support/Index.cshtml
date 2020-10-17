@@ -4,16 +4,11 @@
 }
 
 
-<style>
-    .chat-body {
-        background-color: #eee;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 1rem;
-        overflow: auto;
-    }
-</style>
-
-<div class="chat-body">
+<div class="chat-body is-justify-content-center">
+    <form class="has-text-centered" asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Model.Request.Path">
+        <header class="title">Join Support Chat</header>
+        <footer>
+            <button class="button is-link px-6">Join</button>
+        </footer>
+    </form>
 </div>

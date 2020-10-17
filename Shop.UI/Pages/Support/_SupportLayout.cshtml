@@ -4,162 +4,122 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Shop.UI</title>
-    @*<link href="~/lib/bulma.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="~/lib/bulma.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/support.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
 
-        body {
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-        }
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="site-navbar-top navbar-item">
+            <section class="section">
+                <div class="container">
+                    <div class="columns is-mobile">
+                        <div class="column navbar-item">
+                            <p class="control has-icons-left">
+                                <input class="input border-0" type="text" placeholder="Search">
+                                <span class="icon is-left">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>
 
-        .navbar {
-            background-color: #342742;
-            height: 50px;
-            z-index: 100;
-            box-shadow: 0 1px 2px 0 #333;
-        }
+                        <div class="column site-logo navbar-item is-4 is-center has-text-centered">
+                            <a href="/">
+                                Shoppers
+                            </a>
+                        </div>
 
-        .main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: row;
-        }
+                        <div class="column navbar-item has-text-right">
+                            <span class="icon">
+                                <i class="fa fa-user fa-lg"></i>
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-heart fa-lg"></i>
+                            </span>
+                            <a href="/Cart">
+                                <span class="icon">
+                                    <i class="fa fa-shopping-cart fa-lg"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </nav>
 
-        .side-menu {
-            background-color: #443554;
-            min-width: 100px;
-            max-width: 100px;
-            z-index: 50;
-            box-shadow: 1px 0 2px 0 #333;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .room-buttom {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0.5rem 1rem;
-            height: 68px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px 1px #333;
-            background-color: #57446b;
-            text-align: center;
-        }
-
-            .room-buttom > strong {
-                font-size: 36px;
-            }
-
-            .room-buttom:hover {
-                box-shadow: 0 1px 3px 1px #222;
-            }
-
-        .chat {
-            background-color: #eee;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            min-height: 100vh;
-            min-width: 100vw;
-            z-index: 200;
-            top: 0;
-            left: 0;
-            background-color: rgba(0.2, 0.2, 0.2, 0.8);
-        }
-
-            .modal.active {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-        .modal-body > .close {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            margin-top: 0;
-        }
-
-        .modal-body {
-            position: relative;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            background-color: #5c4773;
-            padding: 1rem;
-        }
-
-            .modal-body > * {
-                margin-top: 0.75rem;
-            }
-
-            .modal-body > header {
-                color: #fff;
-                font-size: 24px;
-            }
-
-            .modal-body > div > input {
-                width: 100%;
-            }
-
-            .modal-body > footer {
-                text-align: center;
-            }
-    </style>
-
-    <div class="navbar">
-
-    </div>
 
     <div class="main">
-        <vc:room></vc:room>
-        <div class="chat">
-            @RenderBody()
-        </div>
+        <div class="columns is-centered is-mobile">
+            <div class="column is-3-fullhd is-4-widescreen is-5-desktop is-6-tablet is-5-mobile">
 
-        <div class="modal" id="create-room-modal">
-            <form asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Context.Request.Path" class="modal-body">
-                <button type="button" class="close" onclick="closeModal()">X</button>
-                <header>Create Room</header>
-                <div>
-                    <input name="name" />
+                <div class=" sidebar has-slimscroll p-5">
+                    <vc:room></vc:room>
+
+                    <div class="card chat-card mb-4">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48">
+                                        <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4">John Smith</p>
+                                    <p class="subtitle is-6">@@johnsmith</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                <footer>
-                    <button>Create</button>
-                </footer>
-            </form>
+            </div>
+            <div class="column is-6 is-7-mobile chat-parent">
+                <div class="chat">
+                    @RenderBody()
+                </div>
+            </div>
         </div>
-
     </div>
 
-    <script>
-        var createRoomBtn = document.getElementById('create-room-btn');
-        var createRoomModal = document.getElementById('create-room-modal')
 
-        createRoomBtn.addEventListener('click', function () {
-            createRoomModal.classList.add('active');
-        });
-
-        var closeModal = function () {
-            createRoomModal.classList.remove('active');
-        }
-    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
+@*<div class="main">
+    <vc:room></vc:room>
+    <div class="chat">
+        @RenderBody()
+    </div>
+
+    <div class="modal" id="create-room-modal">
+        <form asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Context.Request.Path" class="modal-body">
+            <button type="button" class="close" onclick="closeModal()">X</button>
+            <header>Create Room</header>
+            <div>
+                <input name="name" />
+            </div>
+            <footer>
+                <button>Create</button>
+            </footer>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    var createRoomBtn = document.getElementById('create-room-btn');
+    var createRoomModal = document.getElementById('create-room-modal')
+
+    createRoomBtn.addEventListener('click', function () {
+        createRoomModal.classList.add('active');
+    });
+
+    var closeModal = function () {
+        createRoomModal.classList.remove('active');
+    }
+</script>*@

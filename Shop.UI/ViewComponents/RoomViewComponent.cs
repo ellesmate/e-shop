@@ -20,6 +20,7 @@ namespace Shop.UI.ViewComponents
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var chats = _ctx.ChatUsers
                 .Include(x => x.Chat)
+                    .ThenInclude(x => x.Messages)
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Chat)
                 .ToList();

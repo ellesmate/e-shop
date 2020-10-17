@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Shop.Database;
 using Shop.Domain.Models;
 using Shop.UI.Hubs;
@@ -28,6 +29,12 @@ namespace Shop.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateChat(string name, string returnUrl = null)
         {
+            var chatUsers = _ctx.ChatUsers
+                .Where(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value).ToList();
+
+            if (chatUsers.Count >= 0)
+                return Redirect("/Support/Chat/" + chatUsers.First().ChatId);
+
             var chat = new Chat
             {
                 Name = User.Identity.Name,
@@ -41,18 +48,25 @@ namespace Shop.UI.Controllers
 
             await _ctx.SaveChangesAsync();
 
-            if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
+            //if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            //{
+            //    return Redirect(returnUrl);
 
-            }
-            return Redirect("/Support");
+            //}
+            return Redirect("/Support/Chat/" + chat.Id);
         }
 
         [HttpPost("[action]/{connectionId}/{roomId}")]
         public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
         {
-            // TODO: check is user in this room.
+            int chatId = Int32.Parse(roomId);
+            var chat = _ctx.Chats
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == chatId);
+
+            if (!chat.Users.Any(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return BadRequest();
+
             await _chatHub.Groups.AddToGroupAsync(connectionId, roomId);
 
             return Ok();

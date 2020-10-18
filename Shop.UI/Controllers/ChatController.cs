@@ -32,7 +32,7 @@ namespace Shop.UI.Controllers
             var chatUsers = _ctx.ChatUsers
                 .Where(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value).ToList();
 
-            if (chatUsers.Count >= 0)
+            if (chatUsers.Count > 0)
                 return Redirect("/Support/Chat/" + chatUsers.First().ChatId);
 
             var chat = new Chat

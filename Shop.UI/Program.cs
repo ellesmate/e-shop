@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -61,6 +61,72 @@ namespace Shop.UI
                         userManager.AddClaimAsync(adminUser, adminClaim).GetAwaiter().GetResult();
                         userManager.AddClaimAsync(managerUser, managerClaim).GetAwaiter().GetResult();
                         userManager.AddClaimAsync(supportUser, guestClaim).GetAwaiter().GetResult();
+                        
+                        context.Add(new Product
+                        {
+                            Name = "Naranda GAG110CNA",
+                            Slug = "naranda-gag110cna",
+                            Description = "Гитара с вырезом Naranda CAG110CNA.",
+                            Value = 182.00M,
+                            Stock = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "/images/guitar_1.jpg"},
+                            }
+                        });
+
+                        context.Add(new Product
+                        {
+                            Name = "MD SDG653",
+                            Slug = "md-sdg653",
+                            Description = "Количество струн: 6. Форма: джаз. Верхняя дека: ель. Нижняя дека и обечайка: махагонь. Накладка грифа: палисандр. Цвет верхней деки: натуральный. Покрытие: глянцевое. Механизм крепления струн: металлический держатель. Звукосниматели: 1 single. Элементы регулировки: звук и тон. Форма резонаторных отверстий: f-образная",
+                            Value = 454.54M,
+                            Stock = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "/images/guitar_2.jpg"},
+                            }
+                        });
+                        context.Add(new Product
+                        {
+                            Name = "Cort Sunset NY",
+                            Slug = "cort-sunset-ny",
+                            Description = "Электро-классическая гитара/ Корпус - красное дерево с полостями / Передняя дека --- массив ели / Гриф - красное дерево / Накладка на гриф - палисандр / Датчик --- B-Band A11",
+                            Value = 915.20M,
+                            Stock = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "/images/guitar_3.jpg"},
+                            }
+                        });
+
+                        context.Add(new Product
+                        {
+                            Name = "Epiphone Dot SB",
+                            Slug = "epiphone-dot-sb",
+                            Description = "полуакустическая электрогитара, цвет санберст, корпус ламинированный клён, вклееный гриф махогон, накладка грифа палисандр, инкрустация в виде точек, мензура 24,75`, ширина верхнего порожка 42 мм, звукосниматели H-H, регулировки - 2 громкости, 2 тона, 3х-поз.переключатель, фурнитура - хром, бридж — Tune-o-Matic.",
+                            Value = 1075.50M,
+                            Stock = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "/images/guitar_4.jpg"},
+                            }
+                        });
+
+                        context.SaveChanges();
+
                     }
                 }
             }

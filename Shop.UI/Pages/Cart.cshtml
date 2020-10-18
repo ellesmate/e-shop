@@ -3,11 +3,11 @@
 @{
 }
 
-<div class="container">
-    <div class="columns">
+<section class="section">
+    <div class="container">
         <partial name="_CartPartial" model="@Model.Cart" />
     </div>
-</div>
+</section>
 
 @section scripts{
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -49,13 +49,13 @@
         }
 
         var updateCart = function () {
-            axios.get('/Cart/GetCartComponent')
-                .then(res => {
-                    var html = res.data;
-                    var el = document.getElementById('cart-nav');
+            //axios.get('/Cart/GetCartComponent')
+            //    .then(res => {
+            //        var html = res.data;
+            //        var el = document.getElementById('cart-nav');
 
-                    el.outerHTML = html;
-                })
+            //        el.outerHTML = html;
+            //    })
             axios.get('/Cart/GetCartMain')
                 .then(res => {
                     var html = res.data;

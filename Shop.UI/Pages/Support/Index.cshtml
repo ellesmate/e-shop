@@ -1,0 +1,14 @@
+﻿@page
+@model Shop.UI.Pages.Support.IndexModel
+@{
+}
+
+
+<div class="chat-body is-justify-content-center">
+    <form class="has-text-centered" asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Model.Request.Path">
+        <header class="title">Join Support Chat</header>
+        <footer>
+            <button class="button is-link px-6">Join</button>
+        </footer>
+    </form>
+</div>

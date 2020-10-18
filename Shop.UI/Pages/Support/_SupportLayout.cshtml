@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shop.UI</title>
+    <link rel="stylesheet" href="~/lib/bulma.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/support.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="site-navbar-top navbar-item">
+            <section class="section">
+                <div class="container">
+                    <div class="columns is-mobile">
+                        <div class="column navbar-item">
+                            <p class="control has-icons-left">
+                                <input class="input border-0" type="text" placeholder="Search">
+                                <span class="icon is-left">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="column site-logo navbar-item is-4 is-center has-text-centered">
+                            <a href="/">
+                                Shoppers
+                            </a>
+                        </div>
+
+                        <div class="column navbar-item has-text-right">
+                            <span class="icon">
+                                <i class="fa fa-user fa-lg"></i>
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-heart fa-lg"></i>
+                            </span>
+                            <a href="/Cart">
+                                <span class="icon">
+                                    <i class="fa fa-shopping-cart fa-lg"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </nav>
+
+
+    <div class="main">
+        <div class="columns is-centered is-mobile">
+            <div class="column is-3-fullhd is-4-widescreen is-5-desktop is-6-tablet is-5-mobile">
+
+                <div class=" sidebar has-slimscroll p-5">
+                    <vc:room></vc:room>
+                </div>
+            </div>
+            <div class="column is-6 is-7-mobile chat-parent">
+                <div class="chat">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+
+@*<div class="main">
+    <vc:room></vc:room>
+    <div class="chat">
+        @RenderBody()
+    </div>
+
+    <div class="modal" id="create-room-modal">
+        <form asp-controller="Chat" asp-action="CreateChat" asp-route-returnUrl="@Context.Request.Path" class="modal-body">
+            <button type="button" class="close" onclick="closeModal()">X</button>
+            <header>Create Room</header>
+            <div>
+                <input name="name" />
+            </div>
+            <footer>
+                <button>Create</button>
+            </footer>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    var createRoomBtn = document.getElementById('create-room-btn');
+    var createRoomModal = document.getElementById('create-room-modal')
+
+    createRoomBtn.addEventListener('click', function () {
+        createRoomModal.classList.add('active');
+    });
+
+    var closeModal = function () {
+        createRoomModal.classList.remove('active');
+    }
+</script>*@

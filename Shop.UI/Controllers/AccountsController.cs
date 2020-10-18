@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,14 +12,15 @@ using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
 {
+    [AllowAnonymous]
     public class AccountsController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
 
         public AccountsController(
-            SignInManager<IdentityUser> signInManager, 
-            UserManager<IdentityUser> userManager)
+            SignInManager<User> signInManager, 
+            UserManager<User> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -41,10 +44,16 @@ namespace Shop.UI.Controllers
 
             if (result.Succeeded)
             {
+                await AddGuestClaim(user);
                 return RedirectToPage("/Accounts/Login");
             }
 
             return BadRequest();
+        }
+
+        private Task<IdentityResult> AddGuestClaim(User user)
+        {
+            return _userManager.AddClaimAsync(user, new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Guest));
         }
 
         public IActionResult ExternalLogin()
@@ -77,7 +86,7 @@ namespace Shop.UI.Controllers
 
                     if (user == null)
                     {
-                        user = new IdentityUser
+                        user = new User
                         {
                             UserName = email,
                             Email = email,
@@ -85,6 +94,7 @@ namespace Shop.UI.Controllers
                         };
 
                         await _userManager.CreateAsync(user);
+                        await AddGuestClaim(user);
                     }
 
                     await _userManager.AddLoginAsync(user, info);

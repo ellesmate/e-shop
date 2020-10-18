@@ -1,6 +1,7 @@
 ﻿@page
 @model Shop.UI.Pages.Accounts.LoginModel
 @{
+    var returnUrl = Model.HttpContext.Request.Query["returnUrl"];
 }
 
 <section class="hero is-fullheight">
@@ -14,7 +15,7 @@
                         </span>
                         <span>Sign in with Google</span>
                     </a>
-                    <form method="post" class="box">
+                    <form method="post" class="box" asp-route-returnurl="@returnUrl">
                         <div class="field">
                             <label for="" class="label">Username</label>
                             <div class="control has-icons-left">

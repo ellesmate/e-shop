@@ -4,85 +4,129 @@
     ViewData["Title"] = "Home page";
 }
 
-<style>
-    .card.in-stock:hover .image.front {
-        opacity: 0;
-        transition: opacity 360ms ease-out;
-    }
+<div class="hero is-fullheight has-background">
 
-    .card-image .image.front {
-        transition: opacity 180ms ease-in;
-        z-index: 2;
-    }
+    <img src="images/guitar-banner1.jpg" alt="Fill Murray" class="hero-background is-transparent">
 
-    .card-image .image.back {
-        z-index: 1;
-        top: 0;
-        left: 0;
-        position: absolute;
-        width: 100%;
-    }
-</style>
-
-<div class="section">
-    <div class="columns is-multiline is-mobile">
-
-        @{
-            foreach (var p in Model.Products)
-            {
-                <div class="column is-3-desktop is-4-tablet is-12-mobile">
-                    <a class="card in-stock" asp-page="Product" asp-route-slug="@p.Slug">
-                        <div class="card-image">
-                            @if (p.Images.Count == 1)
-                            {
-                                <figure class="image is-square">
-                                    <img src="@p.Images[0]" alt="">
-                                </figure>
-                            }
-                            else
-                            {
-                                <figure class="image front is-square">
-                                    <img src="@p.Images[0]" alt="">
-                                </figure>
-                                <figure class="image back is-square">
-                                    <img src="@p.Images[1]" alt="">
-                                </figure>
-                            }
-                        </div>
-                        <div class="card-content">
-
-                            @{
-                                string cssClass = "";
-                                string message = "";
-
-                                if (p.StockCount == 0)
-                                {
-                                    cssClass = "is-danger";
-                                    message = "Out of Stock";
-                                }
-                                else if (p.StockCount <= 10)
-                                {
-                                    cssClass = "is-warning";
-                                    message = "Low on Stock";
-                                }
-                            }
-                            @if (p.StockCount <= 10)
-                            {
-                                <div class="notification is-paddingless has-text-centered @cssClass">
-                                    @message
-                                </div>
-                            }
-
-                            <p class="title is-size-5">
-                                @p.Name @p.Value
-                            </p>
-                            <p class="subtitle">
-                                @p.Description
-                            </p>
-                        </div>
-                    </a>
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-justify-content-flex-end">
+                <div class="column is-4 mb-6 pb-6">
+                    <h1 class="title has-text-white">
+                        Finding Your Perfect Guitar
+                    </h1>
+                    <h3 class="subtitle has-text-white">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.
+                    </h3>
+                    <a class="button is-purple-background has-text-white">SHOP NOW</a>
                 </div>
-            }
-        }
+            </div>
+        </div>
     </div>
 </div>
+
+<section class="section">
+    <div class="container">
+
+        <div class="columns is-mobile is-centered">
+            <div class="column is-3-widescreen is-4-tablet">
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image">
+                            <i class="fa fa-truck fa-3x is-purple-color"></i>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <p>
+                            <strong>FREE SHIPPING</strong>
+                            <br>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.
+                        </p>
+                    </div>
+                </article>
+            </div>
+            <div class="column is-3-widescreen is-4-tablet">
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image">
+                            <i class="fa fa-refresh fa-3x is-purple-color"></i>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <p>
+                            <strong>FREE RETURNS</strong>
+                            <br>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.
+                        </p>
+                    </div>
+                </article>
+            </div>
+            <div class="column is-3-widescreen is-4-tablet">
+                <article class="media">
+                    <figure class="media-left">
+                        <p class="image">
+                            <i class="fa fa-question-circle fa-3x is-purple-color"></i>
+                        </p>
+                    </figure>
+                    <div class="media-content">
+                        <p>
+                            <strong>CUSTOMER SUPPORT</strong>
+                            <br>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<hr class="is-horizontal">
+
+<section class="section">
+    <div class="container">
+
+        <div class="columns is-centered">
+
+            <div class="column is-3-fullhd">
+                <a class="block-2-item">
+
+                    <figure class="image is-4by6">
+                        <img src="images/acoustic_category.jpg" alt="">
+                    </figure>
+                    <div class="text">
+                        <span class="is-uppercase">Collection</span>
+                        <h3>Acoustic</h3>
+                    </div>
+                </a>
+            </div>
+
+            <div class="column is-3-fullhd">
+                <a class="block-2-item">
+
+                    <figure class="image is-4by6">
+                        <img src="images/electric_category.jpg" alt="">
+                    </figure>
+                    <div class="text">
+                        <span class="is-uppercase">Collection</span>
+                        <h3>Electric</h3>
+                    </div>
+                </a>
+            </div>
+
+            <div class="column is-3-fullhd">
+                <a class="block-2-item">
+
+                    <figure class="image is-4by6">
+                        <img src="images/bass_category.jpg" alt="">
+                    </figure>
+                    <div class="text">
+                        <span class="is-uppercase">Collection</span>
+                        <h3>Bass</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -19,6 +19,12 @@ using Shop.UI.ValidationContexts;
 using Npgsql;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Shop.Domain.Models;
+using Shop.UI.Hubs;
 
 namespace Shop.UI
 {
@@ -45,7 +51,7 @@ namespace Shop.UI
                 options.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => 
+            services.AddIdentity<User, IdentityRole>(options => 
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;
@@ -61,8 +67,11 @@ namespace Shop.UI
             services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
-                    options.Conventions.AuthorizeFolder("/Admin");
-                    options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
+                    options.Conventions.AuthorizeFolder("/Admin", ShopConstants.Policies.Manager);
+                    options.Conventions.AuthorizePage("/Admin/ConfigureUsers", ShopConstants.Policies.Admin);
+                    options.Conventions.AuthorizeFolder("/Checkout");
+                    options.Conventions.AuthorizeFolder("/Support");
+                    //options.Conventions.AllowAnonymousToPage("/Admin/Login");
                 })
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
@@ -90,11 +99,14 @@ namespace Shop.UI
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
-                options.AddPolicy("Manager", policy => policy
-                .RequireAssertion(context =>
-                    context.User.HasClaim("Role", "Manager")
-                    || context.User.HasClaim("Role", "Admin")));
+                options.AddPolicy(ShopConstants.Policies.Admin, policy => policy
+                    .RequireClaim(ShopConstants.Claims.Role, ShopConstants.Roles.Admin));
+
+                options.AddPolicy(ShopConstants.Policies.Manager, policy => policy
+                    .AddRequirements(new ShopRequirement(ShopConstants.Claims.Role, new[] { ShopConstants.Roles.Manager })));
+
+                options.AddPolicy(ShopConstants.Policies.Customer, policy => policy
+                    .AddRequirements(new ShopRequirement(ShopConstants.Claims.Role, new[] { ShopConstants.Roles.Guest, ShopConstants.Roles.Manager })));
             });
 
             services.AddSession(options =>
@@ -102,6 +114,8 @@ namespace Shop.UI
                 options.Cookie.Name = "Cart";
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
             });
+
+            services.AddSignalR();
 
             StripeConfiguration.ApiKey = Configuration.GetSection("STRIPE")["SECRET_KEY"];
 
@@ -133,11 +147,11 @@ namespace Shop.UI
 
             app.UseSession();
 
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
 
         }
@@ -163,6 +177,28 @@ namespace Shop.UI
             }
 
             return builder.ToString();
+        }
+
+        public class ShopRequirement : ClaimsAuthorizationRequirement, IAuthorizationRequirement
+        {
+            public ShopRequirement(string claimType, IEnumerable<string> allowedValues) : base(claimType, allowedValues) {}
+
+            protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimsAuthorizationRequirement requirement)
+            {
+                if (context.User != null)
+                {
+                    if (context.User.HasClaim(ShopConstants.Claims.Role, ShopConstants.Roles.Admin))
+                    {
+                        context.Succeed(requirement);
+                    }
+                    else
+                    {
+                        return base.HandleRequirementAsync(context, requirement);
+                    }
+                }
+
+                return Task.CompletedTask;
+            }
         }
     }
 }

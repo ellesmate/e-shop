@@ -4,75 +4,182 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Shop.UI</title>
-    <link href="~/lib/bulma.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bulma.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-
     <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a class="navbar-item" asp-page="/Index">
-                    <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-                </a>
+        <div class="site-navbar-top navbar-item">
+            <section class="section">
+                <div class="container">
 
-                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
-
-            <div id="navbarBasicExample" class="navbar-menu">
-                <div class="navbar-start">
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a class="navbar-item" asp-page="/Admin/Index">Admin</a>
-                    }
-
-                </div>
-
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <vc:cart view="Small"></vc:cart>
-
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <a class="button is-light" asp-controller="/Accounts" asp-action="Logout">
-                                    Sign Out
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="button is-light" asp-page="/Accounts/Login">
-                                    Sign in
-                                </a>
-                            }
-
+                    <div class="columns is-mobile">
+                        <div class="column navbar-item">
+                            <p class="control has-icons-left">
+                                <input class="input border-0" type="text" placeholder="Search">
+                                <span class="icon is-left">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </span>
+                            </p>
                         </div>
+
+                        <div class="column site-logo navbar-item is-4 is-center has-text-centered">
+                            <a href="/">
+                                E-shop.net
+                            </a>
+                        </div>
+
+                        <div class="column navbar-item has-text-right">
+                            <span class="icon">
+                                <i class="fa fa-user fa-lg"></i>
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-heart fa-lg"></i>
+                            </span>
+                            <a href="/Cart">
+                                <span class="icon">
+                                    <i class="fa fa-shopping-cart fa-lg"></i>
+                                </span>
+                            </a>
+                        </div>
+
+                        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar-toggle-menu">
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div id="navbar-toggle-menu" class="navbar-menu">
+            <div class="navbar">
+                <a class="navbar-item" href="/">
+                    Home
+                </a>
+
+                <a class="navbar-item">
+                    About
+                </a>
+
+                <a class="navbar-item" href="/Shop">
+                    Shop
+                </a>
+
+                <a class="navbar-item" href="/Support">
+                    Support
+                </a>
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                            About
+                        </a>
+                        <a class="navbar-item">
+                            Jobs
+                        </a>
+                        <a class="navbar-item">
+                            Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    @{
+        var paths = Context.Request.Path.Value.Split("/");
+        
+        List<Tuple<string, string>> pairs = new List<Tuple<string, string>>();
+
+        for (int i = 1; i < paths.Length; i++)
+        {
+            if (paths[i] == "")
+                break;
+
+            pairs.Add(
+                Tuple.Create(
+                    paths[i].First().ToString().ToUpper() + paths[i].Substring(1), 
+                    "/"+String.Join("/", paths, 1, i)
+                )
+            );
+        }
+    }
+
+    <div class="has-background-white-ter py-3">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                  @*  <li class="is-active"><a href="#" aria-current="page">Shop</a></li>*@
+                    @foreach (var t in pairs)
+                    {
+                        var isActive = pairs.Last() == t ? "is-active" : "";
+                        <li class="@isActive"><a href="@t.Item2">@t.Item1</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
     </div>
+
+
+    <main role="main">
+        @RenderBody()
+    </main>
 
     <footer class="footer">
         <div class="content has-text-centered">
-            <p>Copy Rights at Shop, <a asp-page="/Admin/Index">Admin Login</a></p>
+            <p>
+                e-shopdotnet <strong>&copy; 2020 Loboda Kiryl</strong>.
+            </p>
         </div>
     </footer>
+
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+@*<div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="navbar-item" asp-page="/Admin/Index">Admin</a>
+        }
+
+    </div>
+
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <vc:cart view="Small"></vc:cart>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="button is-light" asp-controller="/Accounts" asp-action="Logout">
+                        Sign Out
+                    </a>
+                }
+                else
+                {
+                    <a class="button is-light" asp-page="/Accounts/Login">
+                        Sign in
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>*@

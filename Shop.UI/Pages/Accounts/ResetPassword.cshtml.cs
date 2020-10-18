@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Internal;
 using NETCore.MailKit.Core;
+using Shop.Domain.Models;
 
 namespace Shop.UI.Pages.Accounts
 {
     public class ResetPasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
 
         public ResetPasswordModel(
-            UserManager<IdentityUser> userManager,
+            UserManager<User> userManager,
             IEmailService emailService)
         {
             _userManager = userManager;

@@ -6,7 +6,7 @@
 
 
 <div>
-    <p class="title">Cart</p>
+    @*<p class="title">Cart</p>
     @foreach (var product in Model)
     {
         <article class="media">
@@ -26,6 +26,40 @@
                 </div>
             </div>
         </article>
+    }*@
+
+    <div class="level m-0 p-4 border-bottom">
+        <div class="level-left">
+            <p><strong>Product</strong></p>
+        </div>
+        <div class="level-right">
+            <p><strong>Total</strong></p>
+        </div>
+    </div>
+    @foreach (var product in Model)
+    {
+        var totalValue = product.RealValue * product.Qty;
+
+        <div class="level m-0 p-4 border-bottom">
+            <div class="level-left">
+                <p>@product.Name x @product.Qty</p>
+            </div>
+            <div class="level-right">
+                <p>$@totalValue</p>
+            </div>
+        </div>
     }
+    @{ 
+        var total = Model.Sum(x => x.RealValue * x.Qty);
+    }
+
+    <div class="level m-0 p-4">
+        <div class="level-left">
+            <p><strong>Order Total</strong></p>
+        </div>
+        <div class="level-right">
+            <p><strong>$@total</strong></p>
+        </div>
+    </div>
 
 </div>

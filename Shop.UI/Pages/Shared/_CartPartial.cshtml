@@ -1,52 +1,89 @@
 ﻿@model IEnumerable<Shop.Application.Cart.GetCart.Response>
 
-<div class="column is-8 is-offset-2" id="cart-main">
-    @foreach (var product in Model)
-    {
-        <div class="level">
+<div id="cart-main">
 
-            <div class="level-item">
-                <figure class="image is-128x128">
-                    <img src="@product.Images[0]" />
-                </figure>
+    <table class="table is-bordered is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                var totalValue = product.RealValue * product.Qty;
+                <tr>
+                    <td>
+                        <figure class="table-image container">
+                            <img src="@product.Images[0]" alt="">
+                        </figure>
+                    </td>
+                    <td><strong>@product.Name</strong></td>
+                    <td>@product.Value</td>
+                    <td>
+                        <div class="columns is-gapless has-text-centered is-multiline is-mobile">
+                            <div class="column is-4">
+                                <button class="button" type="button" onclick="removeOneFromCart(event)" data-stock-id="@product.StockId">
+                                    -
+                                </button>
+                            </div>
+                            <div class="column is-4 align-self-center" id="stock-qty-@product.StockId">@product.Qty</div>
+                            <div class="column is-4">
+                                <button class="button" type="button" onclick="addOneToCart(event)" data-stock-id="@product.StockId">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>$@totalValue</td>
+                    <td>
+                        <button class="button is-link" onclick="removeAllFromCart(event)" data-stock-id="@product.StockId"><strong>X</strong></button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <div class="columns is-justify-content-space-between">
+        <div class="column is-6">
+
+            <div class="columns">
+                <div class="column is-5"><a href="" class="button is-link is-uppercase is-fullwidth">Update cart</a></div>
+                <div class="column is-5"><a asp-page="/Index" class="button  is-uppercase is-fullwidth">Continue shopping</a></div>
             </div>
-            <div class="level-item">
-                <p class="title">
-                    @product.Name
-                </p>
+        </div>
+        <div class="column is-3 is-justify-content-end">
+            <div class="has-text-right border-bottom mb-6">
+                <p class="is-size-4 is-uppercase">Cart totals</p>
             </div>
-            <div class="level-item">
-                <div class="columns is-gapless has-text-centered is-multiline is-mobile">
-                    <div class="column is-4">
-                        <button class="button" type="button" onclick="removeOneFromCart(event)" data-stock-id="@product.StockId">
-                            -
-                        </button>
-                    </div>
-                    <div class="column is-4 align-self-center" id="stock-qty-@product.StockId">
-                        @product.Qty
-                    </div>
-                    <div class="column is-4">
-                        <button class="button" type="button" onclick="addOneToCart(event)" data-stock-id="@product.StockId">
-                            +
-                        </button>
-                    </div>
-                    <div class="column is-12">
-                        <a class="has-text-danger" onclick="removeAllFromCart(event)" data-stock-id="@product.StockId">Remove</a>
-                    </div>
+
+            <div class="level">
+                <div class="level-left">
+                    Subtotal
+                </div>
+                <div class="level-right">
+                    $230.00
                 </div>
             </div>
-            <div class="level-item">
-                @product.Value
+            <div class="level">
+                <div class="level-left">
+                    Total
+                </div>
+                <div class="level-right">
+                    $230.00
+                </div>
             </div>
 
+            @{
+                string isActive = Model.Count() <= 0 ? "is-disabled" : "";
+            }
+            <a asp-page="/Checkout/CustomerInformation" class="button is-link is-uppercase is-fullwidth @isActive">Proceed to checkout</a>
         </div>
-    }
-
-    <div class="has-text-right">
-        <a asp-page="/Index" class="button is-text">Back to shop</a>
-        @if (Model.Count() > 0)
-        {
-            <a asp-page="/Checkout/CustomerInformation" class="button is-success">Checkout</a>
-        }
     </div>
 </div>

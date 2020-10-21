@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Shop.Domain.Models;
-using System;
 
 namespace Shop.Database
 {

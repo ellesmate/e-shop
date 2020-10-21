@@ -144,10 +144,12 @@ namespace Shop.Application.Tests
         }
     
         [Theory]
-        [InlineData(1, 2, 3)]
-        [InlineData(1, 100, 100000)]
-        [InlineData(2, 4, 3)]
-        public async Task AddToCartTest(int stockId, int qty, int allStocks)
+        [InlineData(1, 2, 3, true)]
+        [InlineData(1, 100, 100000, true)]
+        [InlineData(2, 4, 3, false)]
+        [InlineData(3, -1, 3, false)]
+        [InlineData(4, -10, 0, false)]
+        public async Task AddToCartTest(int stockId, int qty, int allStocks, bool expectedResult)
         {
             var stock = new Stock
             {
@@ -183,7 +185,7 @@ namespace Shop.Application.Tests
 
             var result = await new AddToCart(sessionMock.Object, stockMock.Object).Do(request);
             
-            Assert.Equal(qty <= allStocks, result);
+            Assert.Equal(expectedResult, result);
 
             var times = result ? Times.Once() : Times.Never();
 

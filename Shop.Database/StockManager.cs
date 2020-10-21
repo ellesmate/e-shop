@@ -53,29 +53,20 @@ namespace Shop.Database
                 .FirstOrDefault(x => x.Id == stockId);
         }
 
-        // database responsibility to update the stock
         public Task PutStockOnHold(int stockId, int qty, string sessionId)
         {
-            // begin transaction
-
-            // update Stock set qty = qty + {0} where Id = {1}
             _ctx.Stock.FirstOrDefault(x => x.Id == stockId).Qty -= qty;
 
             var stockOnHold = _ctx.StocksOnHold
                 .Where(x => x.SessionId == sessionId)
                 .ToList();
 
-            // select count(*) from StocksOnHold where StockId = {0} and sessionId = {1}
             if (stockOnHold.Any(x => x.StockId == stockId))
             {
-                // update StocksOnHold set qty = qty + {0} 
-                //   where StockId = {1} and SessionId = {2}
                 stockOnHold.Find(x => x.StockId == stockId).Qty += qty;
             }
             else
             {
-                // insert into StocksOnHold (StockId, SessionId, Qty, ExpiryDate)
-                //   values ({0}, {1}, {2}, {3})
                 _ctx.StocksOnHold.Add(new StockOnHold
                 {
                     StockId = stockId,
@@ -84,14 +75,12 @@ namespace Shop.Database
                     ExpiryDate = DateTime.Now.AddMinutes(20)
                 });
             }
-
-            // update StocksOnHold set ExpiryDate = {0} where SessionId = {1}
+            
             foreach (var stock in stockOnHold)
             {
                 stock.ExpiryDate = DateTime.Now.AddMinutes(20);
             }
 
-            // commit transaction
             return _ctx.SaveChangesAsync();
         }
 

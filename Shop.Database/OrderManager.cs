@@ -64,7 +64,5 @@ namespace Shop.Database
 
             return _ctx.SaveChangesAsync();
         }
-
-   
     }
 }

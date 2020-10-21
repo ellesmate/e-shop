@@ -9,6 +9,7 @@ COPY Shop.Application.Tests/*.csproj ./Shop.Application.Tests/
 COPY Shop.Application/*.csproj ./Shop.Application/
 COPY Shop.Database/*.csproj ./Shop.Database/
 COPY Shop.Domain/*.csproj ./Shop.Domain/
+COPY Shop.S3/*.csproj ./Shop.S3/
 RUN dotnet restore
 
 # copy everything else and build app
@@ -17,6 +18,7 @@ COPY Shop.Application/. ./Shop.Application/
 COPY Shop.Application/. ./Shop.Application.Tests/
 COPY Shop.Database/. ./Shop.Database/
 COPY Shop.Domain/. ./Shop.Domain/
+COPY Shop.S3/. ./Shop.S3/
 
 WORKDIR /source/Shop.UI
 RUN dotnet publish -c release -o /app --no-restore

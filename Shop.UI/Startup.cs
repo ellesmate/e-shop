@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shop.Domain.Models;
 using Shop.UI.Hubs;
+using Shop.S3;
 
 namespace Shop.UI
 {
@@ -119,7 +120,8 @@ namespace Shop.UI
 
             StripeConfiguration.ApiKey = Configuration.GetSection("STRIPE")["SECRET_KEY"];
 
-            services.AddApplicationServices();
+            services.AddApplicationServices()
+                .AddEShopS3Client(() => Configuration.GetSection(nameof(S3StorageSettings)).Get<S3StorageSettings>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

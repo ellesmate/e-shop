@@ -11,6 +11,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Shop.Domain.Models;
 using System.Linq;
+using Shop.S3;
 
 namespace Shop.UI.Controllers
 {
@@ -36,9 +37,9 @@ namespace Shop.UI.Controllers
         [HttpPost("")]
         public async Task<IActionResult> CreateProduct(
             [FromForm] TempForm form,
-            [FromServices] CreateProduct createProduct)
+            [FromServices] CreateProduct createProduct,
+            [FromServices] S3Client s3Client)
         {
-
             var product = new CreateProduct.Request
             {
                 Name = form.Name,
@@ -46,7 +47,7 @@ namespace Shop.UI.Controllers
                 Value = form.Value
             };
 
-            var results = await Task.WhenAll(UploadFiles());
+            var results = await Task.WhenAll(UploadFiles(s3Client, form.Images));
 
             product.Images.AddRange(results.Select((path, index) => new Image
             {
@@ -54,30 +55,40 @@ namespace Shop.UI.Controllers
                 Path = path,
             }));
 
-            return Ok((await createProduct.Do(product)));
+            return Ok(await createProduct.Do(product));
 
-            IEnumerable<Task<string>> UploadFiles()
+            //IEnumerable<Task<string>> UploadFiles()
+            //{
+            //    var index = 0;
+
+            //    foreach (var image in form.Images)
+            //    {
+            //        var fileName = $"{DateTime.Now.Ticks}_{index++}{Path.GetExtension(image.FileName)}";
+
+            //        yield return SaveFile(fileName, image.OpenReadStream());
+            //    }
+            //}
+
+            //async Task<string> SaveFile(string fileName, Stream fileStream)
+            //{
+            //    var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+            //    var filePath = Path.Combine(folder, fileName);
+
+            //    using (var newStream = new FileStream(filePath, FileMode.Create))
+            //    {
+            //        await fileStream.CopyToAsync(newStream);
+            //        return filePath.Replace(_webHostEnvironment.WebRootPath, "").Replace(@"\", "/");
+            //    }
+            //}
+        }
+
+        private static IEnumerable<Task<string>> UploadFiles(S3Client s3Client, IEnumerable<IFormFile> files)
+        {
+            var index = 0;
+            foreach (var image in files)
             {
-                var index = 0;
-                
-                foreach (var image in form.Images)
-                {
-                    var fileName = $"{DateTime.Now.Ticks}_{index++}{Path.GetExtension(image.FileName)}";
-
-                    yield return SaveFile(fileName, image.OpenReadStream());
-                }
-            }
-
-            async Task<string> SaveFile(string fileName, Stream fileStream)
-            {
-                var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                var filePath = Path.Combine(folder, fileName);
-
-                using (var newStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await fileStream.CopyToAsync(newStream);
-                    return filePath.Replace(_webHostEnvironment.WebRootPath, "").Replace(@"\", "/");
-                }
+                var fileName = $"{DateTime.Now.Ticks}_{index++}{Path.GetExtension(image.FileName)}";
+                yield return s3Client.SavePublicFile($"images/{fileName}", image.OpenReadStream());
             }
         }
 

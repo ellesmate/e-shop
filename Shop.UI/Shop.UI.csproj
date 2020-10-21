@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shop.Application\Shop.Application.csproj" />
     <ProjectReference Include="..\Shop.Database\Shop.Database.csproj" />
+    <ProjectReference Include="..\Shop.S3\Shop.S3.csproj" />
   </ItemGroup>
 
   <ItemGroup>

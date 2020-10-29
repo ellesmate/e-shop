@@ -2,12 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
@@ -44,16 +39,10 @@ namespace Shop.UI.Controllers
 
             if (result.Succeeded)
             {
-                await AddGuestClaim(user);
                 return RedirectToPage("/Accounts/Login");
             }
 
             return BadRequest();
-        }
-
-        private Task<IdentityResult> AddGuestClaim(User user)
-        {
-            return _userManager.AddClaimAsync(user, new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Guest));
         }
 
         public IActionResult ExternalLogin()
@@ -94,7 +83,6 @@ namespace Shop.UI.Controllers
                         };
 
                         await _userManager.CreateAsync(user);
-                        await AddGuestClaim(user);
                     }
 
                     await _userManager.AddLoginAsync(user, info);

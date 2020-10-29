@@ -46,7 +46,7 @@ namespace Shop.Application.Orders
         public Response Do(string reference) =>
             _orderManager.GetOrderByReference(reference, Projection);
 
-        private static Func<Order, Response> Projection = (order) => 
+        public static Func<Order, Response> Projection = (order) => 
             new Response
             {
                 OrderRef = order.OrderRef,

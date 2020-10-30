@@ -48,23 +48,18 @@ namespace Shop.UI.Controllers
 
             await _ctx.SaveChangesAsync();
 
-            //if (!String.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-            //{
-            //    return Redirect(returnUrl);
-
-            //}
             return Redirect("/Support/Chat/" + chat.Id);
         }
 
         [HttpPost("[action]/{connectionId}/{roomId}")]
         public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
         {
-            int chatId = Int32.Parse(roomId);
+            int chatId = int.Parse(roomId);
             var chat = _ctx.Chats
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.Id == chatId);
 
-            if (!chat.Users.Any(x => x.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            if (!chat.Users.Any(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
                 return BadRequest();
 
             await _chatHub.Groups.AddToGroupAsync(connectionId, roomId);

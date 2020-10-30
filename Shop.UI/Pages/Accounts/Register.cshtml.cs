@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shop.Application.Users;
+using Shop.UI.Infrastructure;
 
 namespace Shop.UI.Pages.Accounts
 {
@@ -11,14 +11,12 @@ namespace Shop.UI.Pages.Accounts
         public RegisterViewModel Input { get; set; }
         public void OnGet() {}
 
-        public async Task<IActionResult> OnPost([FromServices] RegisterUser registerUser)
+        public async Task<IActionResult> OnPost([FromServices] AccountManager accountManager)
         {
-            var result = await registerUser.DoAsync(new RegisterUser.Request
-            {
-                Username = Input.Username,
-                Email = Input.Email,
-                Password = Input.Password
-            });
+            var result = await accountManager.RegisterAsync(
+                Input.Username, 
+                Input.Email, 
+                Input.Password);
 
             if (result) 
             {

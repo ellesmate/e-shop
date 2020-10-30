@@ -9,7 +9,7 @@ namespace Shop.UI.Workers.Email
     {
         public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration config)
         {
-            services.Configure<EmailSettings>(config.GetSection(nameof(EmailSettings)));
+            services.Configure<EmailSettings>(config.GetSection("Email"));
             services.AddSingleton<IEmailTemplateFactory, EmailTemplateFactory>();
             services.AddSingleton<EmailChannel>();
             services.AddSingleton<IEmailSink>(p => p.GetRequiredService<EmailChannel>());

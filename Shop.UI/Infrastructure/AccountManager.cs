@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Shop.Application.Emails;
 using Shop.Domain.Models;
 using System.Threading.Tasks;
@@ -10,15 +13,30 @@ namespace Shop.UI.Infrastructure
         private readonly UserManager<User> _userManager;
         private readonly IEmailSink _emailSink;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUrlHelper _urlHelper;
 
         public AccountManager(
             UserManager<User> userManager,
             IEmailSink emailSink,
-            IEmailTemplateFactory emailTemplateFactory)
+            IHttpContextAccessor httpContextAccessor,
+            IEmailTemplateFactory emailTemplateFactory,
+            IUrlHelper urlHelper)
         {
             _userManager = userManager;
             _emailSink = emailSink;
             _emailTemplateFactory = emailTemplateFactory;
+            _httpContextAccessor = httpContextAccessor;
+            _urlHelper = urlHelper;
+        }
+
+        private string GenerateUrl(string controller, string action, object query)
+        {
+            var context = _httpContextAccessor.HttpContext;
+            var scheme = context.Request.Scheme;
+            var host = context.Request.Host.Value;
+
+            return _urlHelper.Action(action, controller, query, scheme, host);
         }
 
         public async Task<bool> RegisterAsync(string username, string email, string password)
@@ -34,7 +52,9 @@ namespace Shop.UI.Infrastructure
             if (result.Succeeded)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var emailMessage = await _emailTemplateFactory.RenderAccountConfirmationAsync(user, code);
+                var link = GenerateUrl("Accounts", "VerifyEmail", new { userId = user.Id, code });
+                
+                var emailMessage = await _emailTemplateFactory.RenderAccountConfirmationAsync(user, link);
 
                 await _emailSink.SendAsync(new SendEmailRequest
                 {
@@ -80,6 +100,19 @@ namespace Shop.UI.Infrastructure
             }
 
             var result = await _userManager.ResetPasswordAsync(user, code, password);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> VerifyEmailAsync(string userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return false;
+            } 
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
             return result.Succeeded;
         }
     }

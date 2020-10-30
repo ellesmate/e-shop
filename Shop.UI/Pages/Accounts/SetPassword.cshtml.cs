@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shop.Application.Users;
+using Shop.UI.Infrastructure;
 
 namespace Shop.UI.Pages.Accounts
 {
@@ -19,14 +19,12 @@ namespace Shop.UI.Pages.Accounts
             };
         }
 
-        public async Task<IActionResult> OnPost([FromServices] ResetPassword resetPassword)
+        public async Task<IActionResult> OnPost([FromServices] AccountManager accountManager)
         {
-            var result = await resetPassword.DoAsync(new ResetPassword.Request
-            {
-                UserId = Input.UserId,
-                Code = Input.Code,
-                Password = Input.Password
-            });
+            var result = await accountManager.RegisterPasswordAsync(
+                Input.UserId,
+                Input.Code,
+                Input.Password);
 
             if (result)
             {

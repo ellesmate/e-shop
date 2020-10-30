@@ -7,6 +7,7 @@ using Shop.Domain.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Shop.Application.Projections;
 
 namespace Shop.UI.Workers.Email
 {
@@ -27,16 +28,16 @@ namespace Shop.UI.Workers.Email
                 RenderFooterAsync()
             );
 
-        public Task<string> RenderAccountConfirmationAsync(User user, string code) =>
+        public Task<string> RenderAccountConfirmationAsync(User user, string link) => 
             Compose(
                 RenderHeaderAsync(),
-                RenderTemplateAsync("account-confirmation", new { User = user, Code = code }), // TODO: Projection
+                RenderTemplateAsync("account-confirmation", new { User = UserProjection.Project(user), Link = link }),
                 RenderFooterAsync()
             );
-        public Task<string> RenderAccountResetPasswordAsync(User user, string code) =>
+        public Task<string> RenderAccountResetPasswordAsync(User user, string link) =>
             Compose(
                 RenderHeaderAsync(),
-                RenderTemplateAsync("account-confirmation", new { User = user, Code = code }),
+                RenderTemplateAsync("reset-password", new { User = UserProjection.Project(user), Link = link }),
                 RenderFooterAsync()
             );
 

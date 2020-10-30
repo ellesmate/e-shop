@@ -7,7 +7,7 @@ namespace Shop.UI.Pages
 
         public void OnGet()
         {
-
+            
         }
 
     }

@@ -27,6 +27,8 @@ using Shop.Domain.Models;
 using Shop.UI.Hubs;
 using Shop.S3;
 using Shop.UI.Workers.Email;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Shop.UI
 {
@@ -124,6 +126,13 @@ namespace Shop.UI
             services.AddApplicationServices()
                 .AddEmailService(Configuration)
                 .AddEShopS3Client(() => Configuration.GetSection(nameof(S3StorageSettings)).Get<S3StorageSettings>());
+            services.AddScoped<AccountManager>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x => {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                return x.GetRequiredService<IUrlHelperFactory>().GetUrlHelper(actionContext);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

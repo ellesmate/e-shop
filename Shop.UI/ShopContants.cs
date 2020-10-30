@@ -8,6 +8,7 @@ namespace Shop.UI
             public const string Admin = nameof(Admin);
             public const string Manager = nameof(Manager);
             public const string Customer = nameof(Customer);
+            public const string Support = nameof(Support);
         }
         public struct Schemas
         {
@@ -24,6 +25,7 @@ namespace Shop.UI
             public const string Customer = nameof(Customer);
             public const string Admin = nameof(Admin);
             public const string Manager = nameof(Manager);
+            public const string Support = nameof(Support);
         }
     }
 }

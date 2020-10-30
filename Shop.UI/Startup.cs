@@ -99,7 +99,7 @@ namespace Shop.UI
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
-            services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
+            //services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddAuthorization(options =>
             {

@@ -58,12 +58,12 @@ namespace Shop.UI.Workers.Email
         {
             return new SmtpClient
             {
+                EnableSsl = true,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(settings.Account, settings.Password, settings.Host),
                 Host = settings.Host,
                 Port = int.Parse(settings.Port),
-                EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = true,
-                Credentials = new NetworkCredential(settings.Account, settings.Password),
             };
         }
 

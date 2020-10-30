@@ -43,10 +43,12 @@ namespace Shop.UI.Workers.Email
                 }
                 catch (SmtpException e)
                 {
+                    _logger.LogError(e, e.Message);
                     _logger.LogError(e, "Failed to send email");
                 }
                 catch (Exception e)
                 {
+                    _logger.LogError(e, e.Message);
                     _logger.LogError(e, "Failed to send email");
                 }
             }

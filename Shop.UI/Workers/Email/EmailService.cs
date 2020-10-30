@@ -60,7 +60,7 @@ namespace Shop.UI.Workers.Email
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(settings.Account, settings.Password, settings.Host),
+                Credentials = new NetworkCredential(settings.Account, settings.Password),
                 Host = settings.Host,
                 Port = int.Parse(settings.Port),
                 DeliveryMethod = SmtpDeliveryMethod.Network,

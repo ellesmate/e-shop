@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
-    [Authorize(Policy = ShopConstants.Policies.Customer)]
     public class CartController : Controller
     {
 

@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using Shop.UI.Infrastructure;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
@@ -17,13 +13,16 @@ namespace Shop.UI.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly AccountManager _accountManager;
 
         public AccountsController(
             SignInManager<User> signInManager, 
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            AccountManager accountManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _accountManager = accountManager;
         }
         
         [HttpGet]
@@ -36,24 +35,14 @@ namespace Shop.UI.Controllers
 
         public async Task<IActionResult> VerifyEmail(string userId, string code)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var result = await _accountManager.VerifyEmailAsync(userId, code);
 
-            if (user == null) return BadRequest();
-
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-
-            if (result.Succeeded)
+            if (result)
             {
-                await AddGuestClaim(user);
                 return RedirectToPage("/Accounts/Login");
             }
 
             return BadRequest();
-        }
-
-        private Task<IdentityResult> AddGuestClaim(User user)
-        {
-            return _userManager.AddClaimAsync(user, new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Guest));
         }
 
         public IActionResult ExternalLogin()
@@ -67,44 +56,38 @@ namespace Shop.UI.Controllers
         public async Task<IActionResult> ExternalResponse()
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            if (info is null)
                 return RedirectToPage("/Accounts/Login");
 
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
 
             if (result.Succeeded)
             {
                 return RedirectToPage("/Index");
             }
-            else
+            else if (email is null)
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-
-                if (email != null)
-                {
-                    var user = await _userManager.FindByEmailAsync(email);
-
-                    if (user == null)
-                    {
-                        user = new User
-                        {
-                            UserName = email,
-                            Email = email,
-                            EmailConfirmed = true
-                        };
-
-                        await _userManager.CreateAsync(user);
-                        await AddGuestClaim(user);
-                    }
-
-                    await _userManager.AddLoginAsync(user, info);
-                    await _signInManager.SignInAsync(user, false);
-
-                    return RedirectToPage("/Index");
-                }
-
                 return RedirectToPage("/Accounts/Login");
             }
+           
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                user = new User
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true
+                };
+
+                await _userManager.CreateAsync(user);
+            }
+
+            await _userManager.AddLoginAsync(user, info);
+            await _signInManager.SignInAsync(user, false);
+
+            return RedirectToPage("/Index");
         }
     }
 }

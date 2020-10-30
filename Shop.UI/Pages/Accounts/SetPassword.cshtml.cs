@@ -1,25 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shop.Domain.Models;
+using Shop.UI.Infrastructure;
 
 namespace Shop.UI.Pages.Accounts
 {
     public class SetPasswordModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-
-        public SetPasswordModel(UserManager<User> userManager)
-        {
-            _userManager = userManager;
-        }
         [BindProperty]
         public ResetPasswordViewModel Input { get; set; }
+
         public void OnGet(string userId, string code)
         {
             Input = new ResetPasswordViewModel
@@ -29,15 +19,14 @@ namespace Shop.UI.Pages.Accounts
             };
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost([FromServices] AccountManager accountManager)
         {
-            var user = await _userManager.FindByIdAsync(Input.UserId);
+            var result = await accountManager.RegisterPasswordAsync(
+                Input.UserId,
+                Input.Code,
+                Input.Password);
 
-            if (user == null) return BadRequest();
-
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
-
-            if (result.Succeeded)
+            if (result)
             {
                 return RedirectToPage("/Accounts/Login");
             }

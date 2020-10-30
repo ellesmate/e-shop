@@ -1,0 +1,38 @@
+﻿<div style="background-color: #c9f8e8;">
+
+	<div style="width: 100%; padding: 2rem 0 0 0;">
+		<table style="margin: 0 auto; background-color: #fff; max-width: 800px;">
+			<tbody>
+				<tr>
+					<td style="font-size: 2rem; padding: 0 5rem;">
+						<div style="text-align: center; position: relative">
+							<div style="font-family: 'Nunito', sans-serif;">
+								Hi {{ User.UserName }}
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="font-size: 2rem; padding: 0 5rem;">
+						<div style="text-align: center; position: relative">
+							<div style="font-family: 'Nunito', sans-serif; font-size:large;">
+								Please verify that your email address is {{ User.Email }}, and that you entered it when signing up for E-SHOPDOTNET
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="font-size: 2rem; padding: 0 5rem;">
+						<a href="{{ Link }}" style="min-height: 100px; ">
+							<div style="background-color: #1dd899; border-radius: 5px; text-align: center; position: relative; margin: 20px 25%; padding: 0.8rem 0;">
+								<div style="color: #fff; font-family: 'Nunito', sans-serif; font-size: large;">
+									<b>Verify email</b>
+								</div>
+							</div>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

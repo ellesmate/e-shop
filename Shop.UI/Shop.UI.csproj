@@ -6,7 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\email-templates\account-confirmation.liquid" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="nlog.config" />
+    <_ContentIncludedByDefault Remove="wwwroot\email-templates\account-confirmation.liquid" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\email-templates\account-confirmation.liquid" />
   </ItemGroup>
 
   <ItemGroup>

@@ -56,11 +56,11 @@ namespace Shop.UI
 
                         var adminClaim = new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Admin);
                         var managerClaim = new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Manager);
-                        var guestClaim = new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Guest);
+                        var supportClaim = new Claim(ShopConstants.Claims.Role, ShopConstants.Roles.Support);
 
                         userManager.AddClaimAsync(adminUser, adminClaim).GetAwaiter().GetResult();
                         userManager.AddClaimAsync(managerUser, managerClaim).GetAwaiter().GetResult();
-                        userManager.AddClaimAsync(supportUser, guestClaim).GetAwaiter().GetResult();
+                        userManager.AddClaimAsync(supportUser, supportClaim).GetAwaiter().GetResult();
                         
                         context.Add(new Product
                         {

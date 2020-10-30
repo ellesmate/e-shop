@@ -19,7 +19,7 @@ namespace Shop.Database
 
         private void UpdateSlug(Product product)
         {
-            var slug = product.Name.Replace(' ', '-');
+            var slug = product.Name.ToLower().Replace(' ', '-');
             product.Slug = slug;
         }
 
@@ -76,6 +76,5 @@ namespace Shop.Database
                 .Select(selector)
                 .ToList();
         }
-
     }
 }

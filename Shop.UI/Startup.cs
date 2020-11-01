@@ -9,16 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Application;
-using Shop.Domain.Infrastructure;
 using Shop.UI.Infrastructure;
 using FluentValidation.AspNetCore;
-using FluentValidation;
-using Shop.Application.Cart;
-using Shop.UI.ValidationContexts;
 using Npgsql;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
@@ -98,8 +91,6 @@ namespace Shop.UI
                     options.ClientSecret = auth["Google_ClientSecret"];
                     options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
-
-            //services.AddMailKit(config => config.UseMailKit(Configuration.GetSection("Email").Get<MailKitOptions>()));
 
             services.AddAuthorization(options =>
             {

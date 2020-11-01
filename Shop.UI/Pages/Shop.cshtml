@@ -95,18 +95,62 @@
                 </div>
 
                 <nav class="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-                    <!-- <a class="pagination-previous">Previous</a>
-                    <a class="pagination-next">Next page</a> -->
                     <ul class="pagination-list">
-                        <li><a class="pagination-link" aria-label="Goto previous"><</a></li>
-                        <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
-                        <li><span class="pagination-ellipsis">&hellip;</span></li>
-                        <li><a class="pagination-link" aria-label="Goto page 45">45</a></li>
-                        <li><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
-                        <li><a class="pagination-link" aria-label="Goto page 47">47</a></li>
-                        <li><span class="pagination-ellipsis">&hellip;</span></li>
-                        <li><a class="pagination-link" aria-label="Goto page 86">86</a></li>
-                        <li><a class="pagination-link" aria-label="Goto next">></a></li>
+                        @{
+                            List<int> pages = new List<int>();
+
+                            int startPage = Math.Max(Model.PageNumber - 2, 1);
+                            int endPage = Math.Min(Model.PageNumber + 2, Model.PageCount);
+
+                            if (startPage != 1)
+                                pages.Add(1);
+                            if (startPage > 2)
+                                pages.Add(-1);
+
+                            for (int i = startPage; i <= endPage; i++)
+                            {
+                                pages.Add(i);
+                            }
+
+                            if (Model.PageCount - endPage > 1)
+                                pages.Add(-1);
+                            if (endPage != Model.PageCount)
+                                pages.Add(Model.PageCount);
+                        }
+
+                        @if (Model.PageNumber == 1)
+                        {
+                            <li><a class="pagination-link" asp-route-p="@(Model.PageNumber - 1)" disabled>&lt</a></li>
+                        }
+                        else
+                        {
+                            <li><a class="pagination-link" asp-route-p="@(Model.PageNumber - 1)">&lt</a></li>
+                        }
+
+                        @foreach (var page in pages)
+                        {
+                            string activeClass = page == Model.PageNumber ? "is-current" : "";
+
+                            if (page == -1)
+                            {
+                                <li><span class="pagination-ellipsis">&hellip;</span></li>
+                            }
+                            else
+                            {
+                                <li><a class="pagination-link @activeClass" asp-route-p="@(page)">@(page)</a></li>
+                            }
+                        }
+
+                        @if (Model.PageNumber == Model.PageCount)
+                        {
+                            <li><a class="pagination-link" asp-route-p="@(Model.PageNumber + 1)" disabled>></a></li>
+
+                        }
+                        else
+                        {
+                            <li><a class="pagination-link" asp-route-p="@(Model.PageNumber + 1)">></a></li>
+                        }
+
                     </ul>
                 </nav>
             </div>

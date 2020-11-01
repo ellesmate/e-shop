@@ -14,7 +14,7 @@ namespace Shop.Application.Products
             _productManager = productManager;
         }
 
-        public IEnumerable<ProductViewModel> Do()
+        public IEnumerable<ProductViewModel> Do(int skip, int take)
         {
             return _productManager
                 .GetProducts(x => new ProductViewModel
@@ -27,7 +27,9 @@ namespace Shop.Application.Products
                     Images = x.Images.Select(y => y.Path)
                         .Take(2)
                         .ToList()
-                });
+                },
+                skip,
+                take);
         }
         public class ProductViewModel
         {

@@ -68,13 +68,28 @@ namespace Shop.Database
                 .FirstOrDefault();
         }
 
-        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector)
+        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector) => GetProducts(selector, 0, -1);
+
+        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector, int skip, int take)
         {
-            return _ctx.Products
+            var query = _ctx.Products
+                .Skip(skip);
+
+            if (take != -1)
+            {
+                query = query.Take(take);
+            }
+
+            return query
                 .Include(x => x.Stock)
                 .Include(x => x.Images)
                 .Select(selector)
                 .ToList();
+        }
+
+        public int CountProducts()
+        {
+            return _ctx.Products.Count();
         }
     }
 }

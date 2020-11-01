@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Application.ProductsAdmin;
-using Shop.Database;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 using Shop.Domain.Models;
 using System.Linq;
 using Shop.S3;
@@ -19,15 +16,6 @@ namespace Shop.UI.Controllers
     [Authorize(Policy = ShopConstants.Policies.Manager)]
     public class ProductsController : Controller
     {
-        private ApplicationDbContext _ctx;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public ProductsController(ApplicationDbContext ctx, IWebHostEnvironment webHostEnvironment)
-        {
-            _ctx = ctx;
-            _webHostEnvironment = webHostEnvironment;
-        }
-
         [HttpGet("")]
         public IActionResult GetProducts([FromServices] GetProducts getProducts) => Ok(getProducts.Do());
 
@@ -56,30 +44,6 @@ namespace Shop.UI.Controllers
             }));
 
             return Ok(await createProduct.Do(product));
-
-            //IEnumerable<Task<string>> UploadFiles()
-            //{
-            //    var index = 0;
-
-            //    foreach (var image in form.Images)
-            //    {
-            //        var fileName = $"{DateTime.Now.Ticks}_{index++}{Path.GetExtension(image.FileName)}";
-
-            //        yield return SaveFile(fileName, image.OpenReadStream());
-            //    }
-            //}
-
-            //async Task<string> SaveFile(string fileName, Stream fileStream)
-            //{
-            //    var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-            //    var filePath = Path.Combine(folder, fileName);
-
-            //    using (var newStream = new FileStream(filePath, FileMode.Create))
-            //    {
-            //        await fileStream.CopyToAsync(newStream);
-            //        return filePath.Replace(_webHostEnvironment.WebRootPath, "").Replace(@"\", "/");
-            //    }
-            //}
         }
 
         private static IEnumerable<Task<string>> UploadFiles(S3Client s3Client, IEnumerable<IFormFile> files)

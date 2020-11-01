@@ -14,5 +14,7 @@ namespace Shop.Domain.Infrastructure
         TResult GetProductById<TResult>(int id, Func<Product, TResult> selector);
         TResult GetProductBySlug<TResult>(string name, Func<Product, TResult> selector);
         IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector);
+        IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector, int skip, int take);
+        public int CountProducts();
     }
 }

@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<Shop.Application.Cart.GetCart.Response>
 
+@{ 
+    var total = Model.Sum(x => x.Qty * x.RealValue).ToString("N2");
+}
+
 <div id="cart-main">
 
     <table class="table is-bordered is-hoverable is-fullwidth">
@@ -68,7 +72,7 @@
                     Subtotal
                 </div>
                 <div class="level-right">
-                    $230.00
+                    $@total
                 </div>
             </div>
             <div class="level">
@@ -76,7 +80,7 @@
                     Total
                 </div>
                 <div class="level-right">
-                    $230.00
+                    $@total
                 </div>
             </div>
 

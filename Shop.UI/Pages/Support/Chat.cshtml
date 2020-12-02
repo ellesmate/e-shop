@@ -9,7 +9,7 @@
         <div class="message">
             <header>@message.Name:</header>
             <p>@message.Text</p>
-            <footer>@message.Timestamp</footer>
+            <footer>@message.Timestamp.ToLocalTime()</footer>
         </div>
     }
 </div>
@@ -29,6 +29,8 @@
             .withUrl("/chatHub")
             .build();
         var _connectionId = '';
+        var chatBody = document.querySelector(".chat-body");
+        chatBody.scrollTop = chatBody.scrollHeight;
 
         connection.on("ReceiveMessage", function (data) {
             console.log("received");
@@ -43,14 +45,16 @@
             p.appendChild(document.createTextNode(data.text));
 
             var footer = document.createElement("footer");
-            footer.appendChild(document.createTextNode(data.timestamp));
+            var date = new Date(data.timestamp)
+            footer.appendChild(document.createTextNode(date.toLocaleDateString() + ' ' + date.toLocaleTimeString()));
 
             message.appendChild(header);
             message.appendChild(p);
             message.appendChild(footer);
 
             console.log(data)
-            document.querySelector(".chat-body").append(message);
+            chatBody.append(message);
+            chatBody.scrollTop = chatBody.scrollHeight;
         });
 
         var joinRoom = function () {

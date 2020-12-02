@@ -85,7 +85,7 @@ namespace Shop.UI.Controllers
                 ChatId = roomId,
                 Text = message,
                 Name = User.Identity.Name,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.UtcNow
             };
 
             _ctx.Add(Message);
@@ -97,7 +97,7 @@ namespace Shop.UI.Controllers
                 {
                     Message.Text,
                     Message.Name,
-                    Timestamp = Message.Timestamp.ToString("dd/MM/yyyy hh:mm:ss")
+                    Message.Timestamp
                 });
 
             return Ok();

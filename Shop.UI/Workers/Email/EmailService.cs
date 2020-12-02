@@ -12,27 +12,33 @@ namespace Shop.UI.Workers.Email
 {
     public class EmailService : BackgroundService
     {
+        private const int maxAttempts = 3;
+
         private readonly IOptionsMonitor<EmailSettings> _optionsMonitor;
         private readonly ILogger<EmailService> _logger;
         private readonly IEmailQueue _emailQueue;
+        private readonly IEmailSink _emailSink;
 
         public EmailService(
             IOptionsMonitor<EmailSettings> optionsMonitor,
             ILogger<EmailService> logger,
-            IEmailQueue emailQueue)
+            IEmailQueue emailQueue,
+            IEmailSink emailSink)
         {
             _optionsMonitor = optionsMonitor;
             _logger = logger;
             _emailQueue = emailQueue;
+            _emailSink = emailSink;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            SendEmailRequest request = null;
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
                 {
-                    var request = await _emailQueue.ReadAsync();
+                    request = await _emailQueue.ReadAsync();
 
                     _logger.LogInformation("Sending Email to {0} , with subject {1}", request.To, request.Subject);
 
@@ -43,6 +49,12 @@ namespace Shop.UI.Workers.Email
                 }
                 catch (SmtpException e)
                 {
+                    if (request?.Failed < maxAttempts)
+                    {
+                        request.Failed++;
+                        await _emailSink.SendAsync(request);
+                    }
+                    
                     _logger.LogError(e, e.Message);
                     _logger.LogError(e, "Failed to send email");
                 }

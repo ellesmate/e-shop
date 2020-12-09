@@ -85,8 +85,5 @@ namespace Shop.UI.Pages.Checkout
 
             return RedirectToPage("/Index");
         }
-
-        
-
     }
 }

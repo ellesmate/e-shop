@@ -27,10 +27,9 @@ namespace Shop.UI.Controllers.Api
             return BadRequest();
         }
 
-        [HttpPost("pay/{stripeEmail}/{stripeToken}")]
+        [HttpPost("pay")]
         public async Task<IActionResult> Pay(
-           string stripeEmail,
-           string stripeToken,
+           [FromBody] string stripeToken,
            [FromServices] Application.Cart.GetOrder getOrder,
            [FromServices] CreateOrder createOrder,
            [FromServices] ISessionManager sessionManager)
@@ -38,7 +37,7 @@ namespace Shop.UI.Controllers.Api
             var customers = new CustomerService();
             var customer = customers.Create(new CustomerCreateOptions
             {
-                Email = stripeEmail,
+                Email = null,
                 Source = stripeToken
             });
 

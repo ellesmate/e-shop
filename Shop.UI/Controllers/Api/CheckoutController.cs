@@ -27,7 +27,7 @@ namespace Shop.UI.Controllers.Api
             return BadRequest();
         }
 
-        [HttpPost("pay")]
+        [HttpPost("pay/{stripeEmail}/{stripeToken}")]
         public async Task<IActionResult> Pay(
            string stripeEmail,
            string stripeToken,

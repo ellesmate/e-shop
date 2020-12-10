@@ -87,6 +87,24 @@ namespace Shop.Database
                 .ToList();
         }
 
+        public IEnumerable<TResult> GetProductsByCategory<TResult>(string category, Func<Product, TResult> selector, int skip, int take)
+        {
+            var query = _ctx.Products
+                .Where(p => p.Category == category)
+                .Skip(skip);
+
+            if (take != -1)
+            {
+                query = query.Take(take);
+            }
+
+            return query
+                .Include(x => x.Stock)
+                .Include(x => x.Images)
+                .Select(selector)
+                .ToList();
+        }
+
         public int CountProducts()
         {
             return _ctx.Products.Count();

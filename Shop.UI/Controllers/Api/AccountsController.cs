@@ -45,7 +45,7 @@ namespace Shop.UI.Controllers.Api
         {
             if (User.Identity.IsAuthenticated)
             {
-                return Ok(User.FindFirst(ClaimTypes.Name).Value);
+                return Ok(new { Username = User.FindFirst(ClaimTypes.Name).Value });
             }
 
             return BadRequest();

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using Shop.Database;
+using Shop.Domain.Enums;
 using Shop.Domain.Models;
 
 namespace Shop.UI
@@ -68,6 +69,7 @@ namespace Shop.UI
                             Slug = "naranda-gag110cna",
                             Description = "Гитара с вырезом Naranda CAG110CNA.",
                             Value = 182.00M,
+                            Category = Category.Acoustic,
                             Stock = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
@@ -84,6 +86,7 @@ namespace Shop.UI
                             Slug = "md-sdg653",
                             Description = "Количество струн: 6. Форма: джаз. Верхняя дека: ель. Нижняя дека и обечайка: махагонь. Накладка грифа: палисандр. Цвет верхней деки: натуральный. Покрытие: глянцевое. Механизм крепления струн: металлический держатель. Звукосниматели: 1 single. Элементы регулировки: звук и тон. Форма резонаторных отверстий: f-образная",
                             Value = 454.54M,
+                            Category = Category.Electric,
                             Stock = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
@@ -99,6 +102,7 @@ namespace Shop.UI
                             Slug = "cort-sunset-ny",
                             Description = "Электро-классическая гитара/ Корпус - красное дерево с полостями / Передняя дека --- массив ели / Гриф - красное дерево / Накладка на гриф - палисандр / Датчик --- B-Band A11",
                             Value = 915.20M,
+                            Category = Category.Electric,
                             Stock = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
@@ -115,6 +119,7 @@ namespace Shop.UI
                             Slug = "epiphone-dot-sb",
                             Description = "полуакустическая электрогитара, цвет санберст, корпус ламинированный клён, вклееный гриф махогон, накладка грифа палисандр, инкрустация в виде точек, мензура 24,75`, ширина верхнего порожка 42 мм, звукосниматели H-H, регулировки - 2 громкости, 2 тона, 3х-поз.переключатель, фурнитура - хром, бридж — Tune-o-Matic.",
                             Value = 1075.50M,
+                            Category = Category.Electric,
                             Stock = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},

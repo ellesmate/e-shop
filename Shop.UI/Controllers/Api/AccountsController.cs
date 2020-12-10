@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.Domain.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers.Api
@@ -36,6 +38,13 @@ namespace Shop.UI.Controllers.Api
             await _signInManager.SignOutAsync();
             
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            return Ok(User.FindFirst(ClaimTypes.Name).Value);
         }
 
         public class LoginViewModel

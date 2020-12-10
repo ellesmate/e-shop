@@ -40,11 +40,15 @@ namespace Shop.UI.Controllers.Api
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("me")]
         public IActionResult Me()
         {
-            return Ok(User.FindFirst(ClaimTypes.Name).Value);
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(User.FindFirst(ClaimTypes.Name).Value);
+            }
+
+            return BadRequest();
         }
 
         public class LoginViewModel

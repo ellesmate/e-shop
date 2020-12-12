@@ -5,6 +5,9 @@ using Shop.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
+using EntityStock = Shop.Database.Models.Stock;
+using EntityStockOnHold = Shop.Database.Models.StockOnHold; 
+using Shop.Database.Utils;
 
 namespace Shop.Database
 {
@@ -17,49 +20,72 @@ namespace Shop.Database
             _ctx = ctx;
         }
 
-        public Task<int> CreateStock(Stock stock)
+        public async Task<int> CreateStock(Stock stock)
         {
-            _ctx.Stock.Add(stock);
+            var entityStock = Projections.DomainStockToEntityStock(stock);
+            _ctx.Stock.Add(entityStock);
 
-            return _ctx.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
+
+            return entityStock.Id;
         }
 
-        public Task<int> DeleteStock(int id)
+        public async Task<bool> DeleteStock(int id)
         {
-            var stock = _ctx.Stock.FirstOrDefault(x => x.Id == id);
+            var stock = await _ctx.Stock.FindAsync(id);
+            if (stock is null)
+            {
+                throw new ArgumentException("There is no such stock.");
+            }
 
             _ctx.Stock.Remove(stock);
 
-            return _ctx.SaveChangesAsync();
+            return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public Task<int> UpdateStockRange(List<Stock> stockList)
+        public async Task<bool> UpdateStockRange(List<Stock> stockList)
         {
-            _ctx.Stock.UpdateRange(stockList);
+            var entityStocks = stockList.Select(s => Projections.DomainStockToEntityStock(s)).ToList();
+            _ctx.Stock.UpdateRange(entityStocks);
 
-            return _ctx.SaveChangesAsync();
+            return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public bool EnoughStock(int stockId, int qty)
+        public async Task<bool> EnoughStock(int stockId, int qty)
         {
-            return _ctx.Stock.FirstOrDefault(x => x.Id == stockId).Qty >= qty;
+            var stock = await _ctx.Stock.FindAsync(stockId);
+            if (stock is null)
+            {
+                throw new ArgumentException("There is no such stock.");
+            }
+
+            return stock.Qty >= qty;
         }
 
-        public Stock GetStockWithProduct(int stockId)
+        public async Task<Stock> GetStock(int stockId)
         {
-            return _ctx.Stock
-                .Include(x => x.Product)
-                    .ThenInclude(x => x.Images)
-                .FirstOrDefault(x => x.Id == stockId);
+            var stock = await _ctx.Stock.FindAsync(stockId);
+            if (stock is null)
+            {
+                throw new ArgumentException("There is no such stock.");
+            }
+
+            return Projections.EntityStockToDomainStock(stock);
         }
 
-        public Task PutStockOnHold(int stockId, int qty, string sessionId)
+        public async Task PutStockOnHold(int stockId, int qty, string sessionId)
         {
-            _ctx.Stock.FirstOrDefault(x => x.Id == stockId).Qty -= qty;
+            var entityStock = await _ctx.Stock.FindAsync(stockId);
+            if (entityStock is null)
+            {
+                throw new ArgumentException("There is no such stock.");
+            }
 
-            var stockOnHold = _ctx.StocksOnHold
+            entityStock.Qty -= qty;
+
+            var stockOnHold = await _ctx.StocksOnHold
                 .Where(x => x.SessionId == sessionId)
-                .ToList();
+                .ToListAsync();
 
             if (stockOnHold.Any(x => x.StockId == stockId))
             {
@@ -67,7 +93,7 @@ namespace Shop.Database
             }
             else
             {
-                _ctx.StocksOnHold.Add(new StockOnHold
+                _ctx.StocksOnHold.Add(new EntityStockOnHold
                 {
                     StockId = stockId,
                     SessionId = sessionId,
@@ -81,27 +107,34 @@ namespace Shop.Database
                 stock.ExpiryDate = DateTime.Now.AddMinutes(20);
             }
 
-            return _ctx.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
         }
 
-        public Task RemoveStockFromHold(string sessionId)
+        public async Task RemoveStockFromHold(string sessionId)
         {
-            var stockOnHold = _ctx.StocksOnHold
-                .AsEnumerable()
+            var stockOnHold = await _ctx.StocksOnHold
                 .Where(x => x.SessionId == sessionId)
-                .ToList();
+                .ToListAsync();
 
             _ctx.StocksOnHold.RemoveRange(stockOnHold);
 
-            return _ctx.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
         }
 
-        public Task RemoveStockFromHold(int stockId, int qty, string sessionId)
+        public async Task RemoveStockFromHold(int stockId, int qty, string sessionId)
         {
-            var stockOnHold = _ctx.StocksOnHold
-               .FirstOrDefault(x => x.StockId == stockId && x.SessionId == sessionId);
+            var stockOnHold = await _ctx.StocksOnHold
+               .SingleOrDefaultAsync(x => x.StockId == stockId && x.SessionId == sessionId);
+            if (stockOnHold is null)
+            {
+                throw new ArgumentException("There is no such stock on hold.");
+            }
 
-            var stock = _ctx.Stock.FirstOrDefault(x => x.Id == stockId);
+            var stock = await _ctx.Stock.FindAsync(stockId);
+            if (stock is null)
+            {
+                throw new ArgumentException("There is no such stock.");
+            }
 
             stock.Qty += qty;
             stockOnHold.Qty -= qty;
@@ -111,17 +144,17 @@ namespace Shop.Database
                 _ctx.Remove(stockOnHold);
             }
 
-            return _ctx.SaveChangesAsync();
+            await _ctx.SaveChangesAsync();
         }
 
-        public Task RetrieveExpiredStockOnHold()
+        public async Task RemoveExpiredStockOnHold()
         {
-            var stocksOnHold = _ctx.StocksOnHold.Where(x => x.ExpiryDate < DateTime.Now).ToList();
+            var stocksOnHold = await _ctx.StocksOnHold.Where(x => x.ExpiryDate < DateTime.Now).ToListAsync();
 
             if (stocksOnHold.Count > 0)
             {
                 var stocksId = stocksOnHold.Select(x => x.StockId);
-                var stockToReturn = _ctx.Stock.Where(x => stocksId.Contains(x.Id)).ToList();
+                var stockToReturn = await _ctx.Stock.Where(x => stocksId.Contains(x.Id)).ToListAsync();
 
                 foreach (var stock in stockToReturn)
                 {
@@ -130,11 +163,8 @@ namespace Shop.Database
 
                 _ctx.StocksOnHold.RemoveRange(stocksOnHold);
 
-                return _ctx.SaveChangesAsync();
+                await _ctx.SaveChangesAsync();
             }
-
-            return Task.CompletedTask;
         }
-
     }
 }

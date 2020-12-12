@@ -3,8 +3,12 @@ using System.Collections.Generic;
 
 namespace Shop.Domain.Models
 {
-    public class User : IdentityUser
+    public class User
     {
-        public ICollection<ChatUser> Chats { get; set; }
+        public string Id { get; set; }
+
+        public string Username { get; set; }
+
+        public string Email { get; set; }
     }
 }

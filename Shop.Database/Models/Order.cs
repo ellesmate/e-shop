@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shop.Domain.Models
+namespace Shop.Database.Models
 {
     public class Order
     {
@@ -23,8 +23,6 @@ namespace Shop.Domain.Models
 
         public OrderStatus Status { get; set; }
 
-
-
-        public IEnumerable<OrderStock> OrderStocks { get; set; }
+        public ICollection<OrderStock> OrderStocks { get; set; }
     }
 }

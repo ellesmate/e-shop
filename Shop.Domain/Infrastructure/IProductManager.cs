@@ -8,14 +8,23 @@ namespace Shop.Domain.Infrastructure
     public interface IProductManager
     {
         Task<int> CreateProduct(Product product);
-        Task<int> DeleteProduct(int id);
-        Task<int> UpdateProduct(Product product);
+        Task<bool> DeleteProduct(int id);
+        Task<bool> UpdateProduct(Product product);
 
-        TResult GetProductById<TResult>(int id, Func<Product, TResult> selector);
-        TResult GetProductBySlug<TResult>(string name, Func<Product, TResult> selector);
-        IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector);
-        IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector, int skip, int take);
-        IEnumerable<TResult> GetProductsByCategory<TResult>(string category, Func<Product, TResult> select, int skip, int take);
-        public int CountProducts();
+        Task<Product> GetProductById(int id);
+        Task<Product> GetProductBySlug(string slug);
+        Task<Product> GetProductWithStocksBySlug(string slug);
+
+        Task<IEnumerable<Product>> GetProducts();
+        Task<IEnumerable<Product>> GetProducts(int skip, int take);
+
+        Task<IEnumerable<Product>> GetProductsWithImages(int skip, int take);
+        Task<IEnumerable<Product>> GetProductsWithImagesAndStocks(int skip, int take);
+
+        Task<IEnumerable<Product>> GetProductsByCategory(string category, int skip, int take);
+        Task<IEnumerable<Product>> GetProductsWithImagesByCategory(string category, int skip, int take);
+        Task<IEnumerable<Product>> GetProductsWithImagesAndStocksByCategory(string category, int skip, int take);
+
+        public Task<int> CountProducts();
     }
 }

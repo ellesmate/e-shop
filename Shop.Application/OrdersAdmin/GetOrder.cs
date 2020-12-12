@@ -3,6 +3,7 @@ using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.OrdersAdmin
 {
@@ -43,7 +44,11 @@ namespace Shop.Application.OrdersAdmin
             public string StockDescription { get; set; }
         }
 
-        public Response Do(int id) => _orderManager.GetOrderById(id, Projection);
+        public async Task<Response> Do(int id) 
+        {
+            var order = await _orderManager.GetOrderWithWithStocksAndProductsById(id);
+            return Projection(order);
+        }
 
         private static Func<Order, Response> Projection = (order) =>
             new Response

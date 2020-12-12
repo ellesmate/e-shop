@@ -13,7 +13,7 @@ namespace Shop.Application.ProductsAdmin
             _productManager = productManager;
         }
 
-        public Task<int> Do(int id)
+        public Task<bool> Do(int id)
         {
             return _productManager.DeleteProduct(id);
         } 

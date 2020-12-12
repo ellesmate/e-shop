@@ -1,5 +1,6 @@
 ﻿using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace Shop.Application.StockAdmin
@@ -23,11 +24,16 @@ namespace Shop.Application.StockAdmin
                 ProductId = request.ProductId
             };
 
-            await _stockManager.CreateStock(stock);
+            var id = await _stockManager.CreateStock(stock);
+
+            if (id <= 0)
+            {
+                throw new ArgumentException("Failed to create stock.");
+            }
 
             return new Response
             {
-                Id = stock.Id,
+                Id = id,
                 Description = stock.Description,
                 Qty = stock.Qty
             };

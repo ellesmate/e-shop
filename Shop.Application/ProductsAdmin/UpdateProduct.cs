@@ -1,4 +1,5 @@
 ﻿using Shop.Domain.Infrastructure;
+using System;
 using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
@@ -15,13 +16,17 @@ namespace Shop.Application.ProductsAdmin
 
         public async Task<Response> Do(Request request)
         {
-            var product = _productManager.GetProductById(request.Id, x => x);
+            var product = await _productManager.GetProductById(request.Id);
 
             product.Name = request.Name;
             product.Description = request.Description;
             product.Value = request.Value;
 
-            await _productManager.UpdateProduct(product);
+            var success = await _productManager.UpdateProduct(product);
+            if (!success)
+            {
+                throw new ArgumentException("Update failed.");
+            }
 
             return new Response 
             {

@@ -21,7 +21,7 @@ namespace Shop.Application.StockAdmin
                 {
                     Id = x.Id,
                     Description = x.Description,
-                    Stock = x.Stock.Select(y => new StockViewModel
+                    Stock = x.Stocks.Select(y => new StockViewModel
                     {
                         Id = y.Id,
                         Description = y.Description,

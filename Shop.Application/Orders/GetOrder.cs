@@ -3,6 +3,7 @@ using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Orders
 {
@@ -43,22 +44,26 @@ namespace Shop.Application.Orders
             public string StockDescription { get; set; }
         }
 
-        public Response Do(string reference) =>
-            _orderManager.GetOrderByReference(reference, Projection);
+        public async Task<Response> Do(string reference)
+        {
 
-        public static Func<Order, Response> Projection = (order) => 
+            var order = await _orderManager.GetOrderWithWithStocksAndProductsByReference(reference);
+            return Projection(order);
+        }
+
+        public static Func<Order, Response> Projection = (order) =>
             new Response
             {
                 OrderRef = order.OrderRef,
 
-                FirstName = order.OrderRef,
-                LastName = order.OrderRef,
-                Email = order.OrderRef,
-                PhoneNumber = order.OrderRef,
-                Address1 = order.OrderRef,
-                Address2 = order.OrderRef,
-                City = order.OrderRef,
-                PostCode = order.OrderRef,
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Email = order.Email,
+                PhoneNumber = order.PhoneNumber,
+                Address1 = order.Address1,
+                Address2 = order.Address2,
+                City = order.City,
+                PostCode = order.PostCode,
 
                 Products = order.OrderStocks.Select(y => new Product
                 {

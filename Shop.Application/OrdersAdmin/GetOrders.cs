@@ -1,6 +1,8 @@
 ﻿using Shop.Domain.Enums;
 using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.OrdersAdmin
 {
@@ -21,17 +23,16 @@ namespace Shop.Application.OrdersAdmin
             public string Email { get; set; }
         }
 
-        public IEnumerable<Response> Do(int status)
+        public async Task<IEnumerable<Response>> Do(int status)
         {
-            return _orderManager.GetOrdersByStatus((OrderStatus)status,
-                x => new Response
-                {
-                    Id = x.Id,
-                    OrderRef = x.OrderRef,
-                    Email = x.Email
-                }
-            );
-                
+            var orders = await _orderManager.GetOrdersByStatus((OrderStatus)status);
+
+            return orders.Select(x => new Response
+            {
+                Id = x.Id,
+                OrderRef = x.OrderRef,
+                Email = x.Email
+            });
         }
     }
 }

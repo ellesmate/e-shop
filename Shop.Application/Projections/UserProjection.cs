@@ -6,7 +6,7 @@ namespace Shop.Application.Projections
     {
         public static object Project(User user) => new
         {
-            user.UserName,
+            user.Username,
             user.Email
         };
     }

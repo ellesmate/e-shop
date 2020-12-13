@@ -23,6 +23,8 @@ namespace Shop.Domain.Models
 
         public OrderStatus Status { get; set; }
 
-        public ICollection<OrderStock> OrderStocks { get; set; }
+
+
+        public IEnumerable<OrderStock> OrderStocks { get; set; }
     }
 }

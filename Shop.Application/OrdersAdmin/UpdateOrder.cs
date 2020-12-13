@@ -13,7 +13,7 @@ namespace Shop.Application.OrdersAdmin
             _orderManager = orderManager;
         }
 
-        public Task<int> DoAsync(int id)
+        public Task<bool> DoAsync(int id)
         {
             return _orderManager.AdvanceOrder(id);
         }

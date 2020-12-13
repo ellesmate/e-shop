@@ -10,14 +10,14 @@ namespace Shop.UI.Controllers
     public class OrdersController : Controller
     {
         [HttpGet("")]
-        public IActionResult GetOrders(
+        public async Task<IActionResult> GetOrders(
             int status, 
-            [FromServices] GetOrders getOrders) => Ok(getOrders.Do(status));
+            [FromServices] GetOrders getOrders) => Ok(await getOrders.Do(status));
 
         [HttpGet("{id}")]
-        public IActionResult GetOrder(
+        public async Task<IActionResult> GetOrder(
             int id,
-            [FromServices] GetOrder getOrder) => Ok(getOrder.Do(id));
+            [FromServices] GetOrder getOrder) => Ok(await getOrder.Do(id));
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(

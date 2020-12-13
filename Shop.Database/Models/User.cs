@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
-namespace Shop.Domain.Models
+namespace Shop.Database.Models
 {
     public class User : IdentityUser
     {

@@ -4,9 +4,9 @@ namespace Shop.Application.Projections
 {
     public class UserProjection
     {
-        public static object Project(User user) => new
+        public static object Project(DomainUser user) => new
         {
-            user.UserName,
+            user.Username,
             user.Email
         };
     }

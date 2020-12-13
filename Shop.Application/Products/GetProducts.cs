@@ -1,6 +1,7 @@
 ﻿using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Products
 {
@@ -14,23 +15,40 @@ namespace Shop.Application.Products
             _productManager = productManager;
         }
 
-        public IEnumerable<ProductViewModel> Do(int skip, int take)
+        public async Task<IEnumerable<ProductViewModel>> Do(int skip, int take)
         {
-            return _productManager
-                .GetProducts(x => new ProductViewModel
-                {
-                    Name = x.Name,
-                    Description = x.Description,
-                    Value = x.Value.GetValueString(),
-                    Slug = x.Slug,
-                    StockCount = x.Stock.Sum(y => y.Qty),
-                    Images = x.Images.Select(y => y.Path)
+            var products = await _productManager.GetProductsWithImagesAndStocks(skip, take);
+
+            return products.Select(x => new ProductViewModel
+            {
+                Name = x.Name,
+                Description = x.Description,
+                Value = x.Value.GetValueString(),
+                Slug = x.Slug,
+                StockCount = x.Stocks.Sum(y => y.Qty),
+                Images = x.Images.Select(y => y.Path)
                         .Take(2)
                         .ToList()
-                },
-                skip,
-                take);
+            }).ToList();
         }
+
+        public async Task<IEnumerable<ProductViewModel>> Do(string category, int skip, int take)
+        {
+            var products = await _productManager.GetProductsWithImagesAndStocksByCategory(category, skip, take);
+
+            return products.Select(x => new ProductViewModel
+            {
+                Name = x.Name,
+                Description = x.Description,
+                Value = x.Value.GetValueString(),
+                Slug = x.Slug,
+                StockCount = x.Stocks.Sum(y => y.Qty),
+                Images = x.Images.Select(y => y.Path)
+                        .Take(2)
+                        .ToList()
+            }).ToList();
+        }
+
         public class ProductViewModel
         {
             public string Name { get; set; }

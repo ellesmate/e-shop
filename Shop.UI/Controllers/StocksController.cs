@@ -10,7 +10,7 @@ namespace Shop.UI.Controllers
     public class StocksController : Controller
     {
         [HttpGet("")]
-        public IActionResult GetStock([FromServices] GetStock getStock) => Ok(getStock.Do());
+        public async Task<IActionResult> GetStocks([FromServices] GetStocks getStocks) => Ok(await getStocks.Do());
 
         [HttpPost("")]
         public async Task<IActionResult> CreateStock(

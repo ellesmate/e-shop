@@ -47,13 +47,12 @@ namespace Shop.UI.Infrastructure
 
         public void RemoveProduct(int stockId, int qty)
         {
-            var cartList = new List<CartProduct>();
             var stringObject = _session.GetString(KeyCart);
 
             if (string.IsNullOrEmpty(stringObject))
                 return;
             
-            cartList = JsonConvert.DeserializeObject<List<CartProduct>>(stringObject);
+            List<CartProduct> cartList = JsonConvert.DeserializeObject<List<CartProduct>>(stringObject);
 
             if (!cartList.Any(x => x.StockId == stockId))
                 return;
@@ -80,6 +79,7 @@ namespace Shop.UI.Infrastructure
             return JsonConvert.DeserializeObject<IEnumerable<CartProduct>>(stringObject)
                 .Select(selector);
         }
+        
         public void ClearCart()
         {
             _session.Remove(KeyCart);
@@ -91,6 +91,7 @@ namespace Shop.UI.Infrastructure
 
             _session.SetString(KeyCustomerInfo, stringObject);
         }
+
         public CustomerInformation GetCustomerInformation()
         {
             var stringObject = _session.GetString(KeyCustomerInfo);
@@ -100,7 +101,5 @@ namespace Shop.UI.Infrastructure
 
             return JsonConvert.DeserializeObject<CustomerInformation>(stringObject);
         }
-
-        
     }
 }

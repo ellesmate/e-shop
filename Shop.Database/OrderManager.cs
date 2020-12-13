@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Database.Utils;
 using Shop.Domain.Enums;
 using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
+using EntityOrderStock = Shop.Database.Models.OrderStock;
 
 namespace Shop.Database
 {
@@ -17,52 +18,126 @@ namespace Shop.Database
         {
             _ctx = ctx;
         }
-        public bool OrderReferenceExists(string reference)
+        public async Task<bool> OrderReferenceExists(string reference)
         {
-            return _ctx.Orders.Any(x => x.OrderRef == reference);
+            return await _ctx.Orders.AnyAsync(x => x.OrderRef == reference);
         }
 
-        public IEnumerable<TResult> GetOrdersByStatus<TResult>(OrderStatus status, Func<Order, TResult> selector)
+        public async Task<IEnumerable<Order>> GetOrdersByStatus(OrderStatus status)
         {
-            return _ctx.Orders
+            return await _ctx.Orders
                 .Where(x => x.Status == status)
-                .Select(selector)
-                .ToList();
+                .Select(x => Projections.EntityOrderToDomainOrder(x))
+                .ToListAsync();
         }
 
-        private TResult GetOrder<TResult>(
-            Expression<Func<Order, bool>> condition,
-            Func<Order, TResult> selector)
+        //private TResult GetOrder<TResult>(
+        //    Expression<Func<Order, bool>> condition,
+        //    Func<Order, TResult> selector)
+        //{
+        //    return _ctx.Orders
+        //        .Where(condition)
+        //        .Include(x => x.OrderStocks)
+        //            .ThenInclude(x => x.Stock)
+        //                .ThenInclude(x => x.Product)
+        //        .Select(selector)
+        //        .FirstOrDefault();
+        //}
+        public async Task<Order> GetOrderById(int id)
         {
-            return _ctx.Orders
-                .Where(condition)
+            var order = await _ctx.Orders.FindAsync(id);
+            if (order is null)
+            {
+                throw new ArgumentException("There is no such order.");
+            }
+
+            return Projections.EntityOrderToDomainOrder(order);
+        }
+
+        public async Task<Order> GetOrderWithWithStocksAndProductsById(int id)
+        {
+            var entityOrder = await _ctx.Orders
+                .Where(x => x.Id == id)
                 .Include(x => x.OrderStocks)
                     .ThenInclude(x => x.Stock)
                         .ThenInclude(x => x.Product)
-                .Select(selector)
-                .FirstOrDefault();
-        }
-        public TResult GetOrderById<TResult>(int id, Func<Order, TResult> selector)
-        {
-            return GetOrder(order => order.Id == id, selector);
-        }
-        public TResult GetOrderByReference<TResult>(string reference, Func<Order, TResult> selector)
-        {
-            return GetOrder(order => order.OrderRef == reference, selector);
+                .SingleOrDefaultAsync();
+
+            if (entityOrder is null)
+            {
+                throw new ArgumentException("There is no such order.");
+            }
+
+            var order = Projections.EntityOrderToDomainOrder(entityOrder);
+            order.OrderStocks = entityOrder.OrderStocks.Select(x =>
+            {
+                var orderStock = new OrderStock
+                {
+                    StockId = x.StockId,
+                    Qty = x.Qty,
+
+                    Stock = Projections.EntityStockToDomainStock(x.Stock),
+                };
+
+                orderStock.Stock.Product = Projections.EntityProductToDomainProduct(x.Stock.Product);
+
+                return orderStock;
+            });
+
+            return order;
         }
 
-        public Task<int> AdvanceOrder(int id)
+        public async Task<Order> GetOrderByReference(string reference)
         {
-            _ctx.Orders.FirstOrDefault(x => x.Id == id).Status++;
+            var order = await _ctx.Orders.SingleOrDefaultAsync(x => x.OrderRef == reference);
+            if (order is null)
+            {
+                throw new ArgumentException("There is no such order.");
+            }
 
-            return _ctx.SaveChangesAsync();
+            return Projections.EntityOrderToDomainOrder(order);
         }
 
-        public Task<int> CreateOrder(Order order)
+        public async Task<Order> GetOrderWithWithStocksAndProductsByReference(string reference)
         {
-            _ctx.Orders.Add(order);
+            var order = await _ctx.Orders.Where(x => x.OrderRef == reference).SingleOrDefaultAsync();
+           
+            if (order is null)
+            {
+                throw new ArgumentException("There is no such order.");
+            }
 
-            return _ctx.SaveChangesAsync();
+            return await GetOrderWithWithStocksAndProductsById(order.Id);
+        }
+
+        public async Task<bool> AdvanceOrder(int id)
+        {
+            var order = await _ctx.Orders.SingleOrDefaultAsync(x => x.Id == id);
+            if (order is null)
+            {
+                throw new ArgumentException("There is no such order.");
+            }
+
+            order.Status++;
+
+            return (await _ctx.SaveChangesAsync()) > 0;
+        }
+
+        public async Task<int> CreateOrder(Order order, IEnumerable<OrderStock> orderStocks)
+        {
+            var entityOrder = Projections.DomainOrderToEntityOrder(order);
+
+            entityOrder.OrderStocks = orderStocks.Select(s => new EntityOrderStock
+            {
+                StockId = s.StockId,
+                Qty = s.Qty,
+            }).ToList();
+            
+            _ctx.Orders.Add(entityOrder);
+
+            await _ctx.SaveChangesAsync();
+
+            return entityOrder.Id;
         }
     }
 }

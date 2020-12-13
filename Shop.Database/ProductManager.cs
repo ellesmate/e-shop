@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Domain.Infrastructure;
-using Shop.Domain.Models;
+using DomainProduct = Shop.Domain.Models.Product;
+using EntityProduct = Shop.Database.Models.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Shop.Database.Utils;
+using Shop.Domain.Models;
 
 namespace Shop.Database
 {
@@ -17,97 +20,201 @@ namespace Shop.Database
             _ctx = ctx;
         }
 
-        private void UpdateSlug(Product product)
+        private void UpdateSlug(EntityProduct product)
         {
             var slug = product.Name.ToLower().Replace(' ', '-');
             product.Slug = slug;
         }
 
-        public Task<int> CreateProduct(Product product)
+        public async Task<int> CreateProduct(DomainProduct product)
         {
-            UpdateSlug(product);
+            var entityProduct = Projections.DomainProductToEntityProduct(product);
 
-            _ctx.Products.Add(product);
+            UpdateSlug(entityProduct);
 
-            return _ctx.SaveChangesAsync();
+            _ctx.Products.Add(entityProduct);
+
+            await _ctx.SaveChangesAsync();
+
+            return entityProduct.Id;
         }
 
-        public Task<int> DeleteProduct(int id)
+        public async Task<bool> DeleteProduct(int id)
         {
-            var Product = _ctx.Products.FirstOrDefault(x => x.Id == id);
-            _ctx.Products.Remove(Product);
+            var product = await _ctx.Products.FindAsync(id);
+            _ctx.Products.Remove(product);
             
-            return _ctx.SaveChangesAsync();
-        }
-        public Task<int> UpdateProduct(Product product)
-        {
-            UpdateSlug(product);
-
-            _ctx.Products.Update(product);
-
-            return _ctx.SaveChangesAsync();
+            return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public TResult GetProductById<TResult>(int id, Func<Product, TResult> selector)
+        public async Task<bool> UpdateProduct(DomainProduct product)
         {
-            return _ctx.Products
-                .Where(x => x.Id == id)
-                .Select(selector)
-                .FirstOrDefault();
+            var entityProduct = Projections.DomainProductToEntityProduct(product);
+
+            UpdateSlug(entityProduct);
+
+            _ctx.Products.Update(entityProduct);
+
+            return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public TResult GetProductBySlug<TResult>(
-            string slug, 
-            Func<Product, TResult> selector)
+        public async Task<DomainProduct> GetProductById(int id)
         {
-            return _ctx.Products
-                .Include(x => x.Stock)
-                .Include(x => x.Images)
-                .Where(x => x.Slug == slug)
-                .Select(selector)
-                .FirstOrDefault();
-        }
+            var entityProduct = await _ctx.Products.FindAsync(id);
 
-        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector) => GetProducts(selector, 0, -1);
-
-        public IEnumerable<TResult> GetProducts<TResult>(Func<Product, TResult> selector, int skip, int take)
-        {
-            var query = _ctx.Products
-                .Skip(skip);
-
-            if (take != -1)
+            if (entityProduct is null)
             {
-                query = query.Take(take);
+                throw new ArgumentException("There is no such product.");
             }
 
-            return query
-                .Include(x => x.Stock)
-                .Include(x => x.Images)
-                .Select(selector)
-                .ToList();
+            return Projections.EntityProductToDomainProduct(entityProduct);
         }
 
-        public IEnumerable<TResult> GetProductsByCategory<TResult>(string category, Func<Product, TResult> selector, int skip, int take)
+        public async Task<DomainProduct> GetProductBySlug(string slug)
+        {
+            var entityProduct = await _ctx.Products.Where(p => p.Slug == slug).SingleOrDefaultAsync();
+
+            if (entityProduct is null)
+            {
+                throw new ArgumentException("There is no such product.");
+            }
+
+            return Projections.EntityProductToDomainProduct(entityProduct);
+        }
+
+        public async Task<Product> GetProductWithStocksBySlug(string slug)
+        {
+            var entityProduct = await _ctx.Products.Where(p => p.Slug == slug).SingleOrDefaultAsync();
+
+            if (entityProduct is null)
+            {
+                throw new ArgumentException("There is no such product.");
+            }
+
+            await _ctx.Entry(entityProduct)
+                .Collection(p => p.Stocks)
+                .LoadAsync();
+
+            var product = Projections.EntityProductToDomainProduct(entityProduct);
+            product.Stocks = entityProduct.Stocks.Select(Projections.EntityStockToDomainStock).ToList();
+            
+            return product;
+        }
+
+
+        public Task<IEnumerable<DomainProduct>> GetProducts() => GetProducts(0, 1000);
+
+        public async Task<IEnumerable<DomainProduct>> GetProducts(int skip, int take)
+        {
+            var query = _ctx.Products
+                .Skip(skip)
+                .Take(take);
+
+            return await query
+                .Select(x => Projections.EntityProductToDomainProduct(x))
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<DomainProduct>> GetProductsWithImages(int skip, int take)
+        {
+            var query = _ctx.Products
+                .Include(p => p.Images)
+                .Skip(skip)
+                .Take(take);
+
+            var products = await query.ToListAsync();
+            var domainProducts = products.Select(x =>
+            {
+                var p = Projections.EntityProductToDomainProduct(x);
+                p.Images = x.Images.Select(Projections.EntityImageToDomainImage).ToList();
+                return p;
+            });
+
+            return domainProducts;
+        }
+
+        public async Task<IEnumerable<DomainProduct>> GetProductsWithImagesAndStocks(int skip, int take)
+        {
+            var query = _ctx.Products
+                .Include(p => p.Images)
+                .Include(p => p.Stocks)
+                .Skip(skip)
+                .Take(take);
+
+            var products = await query.ToListAsync();
+            var domainProducts = products.Select(x =>
+            {
+                var p = Projections.EntityProductToDomainProduct(x);
+                p.Stocks = x.Stocks.Select(Projections.EntityStockToDomainStock).ToList();
+                p.Images = x.Images.Select(Projections.EntityImageToDomainImage).ToList();
+                return p;
+            });
+
+            return domainProducts;
+        }
+
+        public async Task<IEnumerable<DomainProduct>> GetProductsByCategory(string category, int skip, int take)
         {
             var query = _ctx.Products
                 .Where(p => p.Category == category)
-                .Skip(skip);
+                .Skip(skip)
+                .Take(take);
 
-            if (take != -1)
-            {
-                query = query.Take(take);
-            }
-
-            return query
-                .Include(x => x.Stock)
-                .Include(x => x.Images)
-                .Select(selector)
-                .ToList();
+            return await query
+                .Select(x => Projections.EntityProductToDomainProduct(x))
+                .ToListAsync();
         }
 
-        public int CountProducts()
+        public async Task<IEnumerable<Product>> GetProductsWithImagesByCategory(string category, int skip, int take)
         {
-            return _ctx.Products.Count();
+            var query = _ctx.Products
+                .Include(p => p.Images)
+                .Where(p => p.Category == category)
+                .Skip(skip)
+                .Take(take);
+
+            var products = await query.ToListAsync();
+            var domainProducts = products.Select(x =>
+            {
+                var p = Projections.EntityProductToDomainProduct(x);
+                p.Images = x.Images.Select(Projections.EntityImageToDomainImage).ToList();
+                return p;
+            });
+
+            return domainProducts;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsWithImagesAndStocksByCategory(string category, int skip, int take)
+        {
+            var query = _ctx.Products
+                .Include(p => p.Images)
+                .Include(p => p.Stocks)
+                .Where(p => p.Category == category)
+                .Skip(skip)
+                .Take(take);
+
+            var products = await query.ToListAsync();
+            var domainProducts = products.Select(x =>
+            {
+                var p = Projections.EntityProductToDomainProduct(x);
+                p.Stocks = x.Stocks.Select(Projections.EntityStockToDomainStock).ToList();
+                p.Images = x.Images.Select(Projections.EntityImageToDomainImage).ToList();
+                return p;
+            });
+
+            return domainProducts;
+        }
+
+        public Task<int> CountProducts()
+        {
+            return _ctx.Products.CountAsync();
+        }
+
+        public Task<int> CountProductsWithCategory(string category)
+        {
+            return _ctx.Products
+                .Where(p => p.Category == category)
+                .CountAsync();
         }
     }
 }

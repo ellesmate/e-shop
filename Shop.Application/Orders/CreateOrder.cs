@@ -45,10 +45,9 @@ namespace Shop.Application.Orders
 
         public async Task<bool> Do(Request request)
         {
-            
             var order = new Order
             {
-                OrderRef = CreateOrderReference(),
+                OrderRef = await CreateOrderReference(),
                 StripeReference = request.StripeReference,
 
                 FirstName = request.FirstName,
@@ -59,17 +58,17 @@ namespace Shop.Application.Orders
                 Address2 = request.Address2,
                 City = request.City,
                 PostCode = request.PostCode,
-
-                OrderStocks = request.Stocks.Select(x => new OrderStock
-                {
-                    StockId = x.StockId,
-                    Qty = x.Qty
-                }).ToList()
             };
 
-            var success = await _orderManager.CreateOrder(order) > 0;
+            var id = await _orderManager.CreateOrder(
+                order, 
+                request.Stocks.Select(x => new OrderStock
+                {
+                    StockId = x.StockId,
+                    Qty = x.Qty,
+                }));
 
-            if (success)
+            if (id > 0)
             {
                 await _stockManager.RemoveStockFromHold(request.SessionId);
                 return true;
@@ -77,7 +76,7 @@ namespace Shop.Application.Orders
             return false;
         }
 
-        public string CreateOrderReference()
+        public async Task<string> CreateOrderReference()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var result = new char[12];
@@ -88,7 +87,7 @@ namespace Shop.Application.Orders
                 for (int i = 0; i < result.Length; i++)
                     result[i] = chars[random.Next(chars.Length)];
 
-            } while (_orderManager.OrderReferenceExists(new string(result)));
+            } while (await _orderManager.OrderReferenceExists(new string(result)));
 
             return new string(result);
         }

@@ -82,47 +82,47 @@ namespace Shop.UI.Controllers.Api
             return Ok();
         }
 
-        /////////////////////////////////////////////////////////////////
-        [HttpPost("key/{apiVersion}")]
-        public IActionResult GenerateEphemeralKey(string apiVersion)
-        {
-            var customers = new CustomerService();
+        ///////////////////////////////////////////////////////////////////
+        //[HttpPost("key/{apiVersion}")]
+        //public IActionResult GenerateEphemeralKey(string apiVersion)
+        //{
+        //    var customers = new CustomerService();
 
-            var customer = customers.Create(new CustomerCreateOptions
-            {
-                Email = "alsdkf@adasdf.com"
-            });
+        //    var customer = customers.Create(new CustomerCreateOptions
+        //    {
+        //        Email = "alsdkf@adasdf.com"
+        //    });
 
-            var options = new EphemeralKeyCreateOptions
-            {
-                Customer = customer.Id,
-                StripeVersion = apiVersion
-            };
-            var service = new EphemeralKeyService();
-            var key = service.Create(options);
+        //    var options = new EphemeralKeyCreateOptions
+        //    {
+        //        Customer = customer.Id,
+        //        StripeVersion = apiVersion
+        //    };
+        //    var service = new EphemeralKeyService();
+        //    var key = service.Create(options);
 
-            return Ok(key.ToJson());
-        }
+        //    return Ok(key.ToJson());
+        //}
 
-        [HttpPost("payment")]
-        public IActionResult Payment(
-            [FromServices] Application.Cart.GetOrder getOrder,
-            [FromServices] CreateOrder createOrder,
-            [FromServices] ISessionManager sessionManager)
-        {
-            var options = new PaymentIntentCreateOptions
-            {
-                Amount = 1100,
-                Description = "Shop Purchase",
-                Currency = "usd",
-            };
+        //[HttpPost("payment")]
+        //public IActionResult Payment(
+        //    [FromServices] Application.Cart.GetOrder getOrder,
+        //    [FromServices] CreateOrder createOrder,
+        //    [FromServices] ISessionManager sessionManager)
+        //{
+        //    var options = new PaymentIntentCreateOptions
+        //    {
+        //        Amount = 1100,
+        //        Description = "Shop Purchase",
+        //        Currency = "usd",
+        //    };
 
-            var service = new PaymentIntentService();
-            var paymentIntent = service.Create(options);
-            //return Ok(paymentIntent.ToJson());
-            //return Ok(paymentIntent.PaymentMethodId);
-            return Ok(paymentIntent.ClientSecret);
-        }
+        //    var service = new PaymentIntentService();
+        //    var paymentIntent = service.Create(options);
+        //    //return Ok(paymentIntent.ToJson());
+        //    //return Ok(paymentIntent.PaymentMethodId);
+        //    return Ok(paymentIntent.ClientSecret);
+        //}
 
     }
 }

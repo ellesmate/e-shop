@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Domain.Models;
+using Shop.Database.Models;
 using Shop.UI.Infrastructure;
 using System.Security.Claims;
 using System.Threading.Tasks;

@@ -1,5 +1,4 @@
 ﻿using Shop.Domain.Infrastructure;
-using Shop.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,35 +8,39 @@ namespace Shop.Application.Products
     [Service]
     public class GetProduct
     {
-        private IStockManager _stockManager;
-        private IProductManager _productManager;
+        private readonly IStockManager _stockManager;
+        private readonly IProductManager _productManager;
+        private readonly IProductImageManager _productImageManager;
 
-        public GetProduct(IStockManager stockManager, IProductManager productManager)
+        public GetProduct(IStockManager stockManager, IProductManager productManager, IProductImageManager productImageManager)
         {
             _stockManager = stockManager;
             _productManager = productManager;
+            _productImageManager = productImageManager;
         }
 
         public async Task<ProductViewModel> Do(string slug)
         {
-            await _stockManager.RetrieveExpiredStockOnHold();
+            await _stockManager.RemoveExpiredStockOnHold();
 
-            return _productManager
-                .GetProductBySlug(slug, x => new ProductViewModel
+            var product = await _productManager.GetProductWithStocksBySlug(slug);
+            var images = await _productImageManager.GetImages(product.Id);
+
+            return new ProductViewModel
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Value = product.Value.GetValueString(),
+                Slug = product.Slug,
+                Images = images.Select(y => y.Path).ToList(),
+
+                Stock = product.Stocks.Select(y => new StockViewModel
                 {
-                    Name = x.Name,
-                    Description = x.Description,
-                    Value = x.Value.GetValueString(),
-                    Slug = x.Slug,
-                    Images = x.Images.Select(y => y.Path).ToList(),
-
-                    Stock = x.Stock.Select(y => new StockViewModel
-                    {
-                        Id = y.Id,
-                        Description = y.Description,
-                        Qty = y.Qty
-                    })
-                });
+                    Id = y.Id,
+                    Description = y.Description,
+                    Qty = y.Qty
+                })
+            };
         }
         public class ProductViewModel
         {

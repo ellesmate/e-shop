@@ -9,12 +9,16 @@ namespace Shop.Application.Cart
     public class AddToCart
     {
         private readonly ISessionManager _sessionManager;
-        private IStockManager _stockManager;
+        private readonly IStockManager _stockManager;
+        private readonly IProductManager _productManager;
+        private readonly IProductImageManager _productImageManager;
 
-        public AddToCart(ISessionManager sessionManager, IStockManager stockManager)
+        public AddToCart(ISessionManager sessionManager, IStockManager stockManager, IProductManager productManager, IProductImageManager productImageManager)
         {
             _sessionManager = sessionManager;
             _stockManager = stockManager;
+            _productManager = productManager;
+            _productImageManager = productImageManager;
         }
 
         public class Request
@@ -30,23 +34,25 @@ namespace Shop.Application.Cart
                 return false;
             }
 
-            if (!_stockManager.EnoughStock(request.StockId, request.Qty))
+            if (! await _stockManager.EnoughStock(request.StockId, request.Qty))
             {
                 return false;
             }
 
             await _stockManager.PutStockOnHold(request.StockId, request.Qty, _sessionManager.GetId());
 
-            var stock = _stockManager.GetStockWithProduct(request.StockId);
+            var stock = await _stockManager.GetStock(request.StockId);
+            var product = await _productManager.GetProductById(stock.ProductId);
+            var images = await _productImageManager.GetImages(stock.ProductId);
 
             var cartProduct = new CartProduct
             {
                 ProductId = stock.ProductId,
-                ProductName = stock.Product.Name,
+                ProductName = product.Name,
                 StockId = stock.Id,
-                Images = stock.Product.Images.Select(x => x.Path).ToList(),
+                Images = images.Select(x => x.Path).ToList(),
                 Qty = request.Qty,
-                Value = stock.Product.Value
+                Value = product.Value
             };
 
             _sessionManager.AddProduct(cartProduct);

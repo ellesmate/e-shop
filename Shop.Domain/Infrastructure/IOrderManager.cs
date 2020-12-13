@@ -8,14 +8,18 @@ namespace Shop.Domain.Infrastructure
 {
     public interface IOrderManager
     {
-        bool OrderReferenceExists(string reference);
+        Task<bool> OrderReferenceExists(string reference);
 
-        IEnumerable<TResult> GetOrdersByStatus<TResult>(OrderStatus status, Func<Order, TResult> selector);
-        TResult GetOrderById<TResult>(int id, Func<Order, TResult> selector);
-        TResult GetOrderByReference<TResult>(string reference, Func<Order, TResult> selector);
+        Task<IEnumerable<Order>> GetOrdersByStatus(OrderStatus status);
+        Task<Order> GetOrderById(int id);
+        Task<Order> GetOrderWithWithStocksAndProductsById(int id);
 
-        Task<int> AdvanceOrder(int id);
+        Task<Order> GetOrderByReference(string reference);
+        Task<Order> GetOrderWithWithStocksAndProductsByReference(string reference);
 
-        Task<int> CreateOrder(Order order);
+
+        Task<bool> AdvanceOrder(int id);
+
+        Task<int> CreateOrder(Order order, IEnumerable<OrderStock> stocks);
     }
 }

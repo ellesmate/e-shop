@@ -1,33 +1,36 @@
 ﻿using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.StockAdmin
 {
     [Service]
-    public class GetStock
+    public class GetStocks
     {
         private readonly IProductManager _productManager;
 
-        public GetStock(IProductManager productManager)
+        public GetStocks(IProductManager productManager)
         {
             _productManager = productManager;
         }
 
-        public IEnumerable<ProductViewModel> Do()
+        public async Task<IEnumerable<ProductViewModel>> Do()
         {
-            return _productManager
-                .GetProducts(x => new ProductViewModel
+            var products = await _productManager.GetProductsWithImagesAndStocks(0, 1000);
+
+            return products.Select(x => new ProductViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Stock = x.Stocks.Select(y => new StockViewModel
                 {
-                    Id = x.Id,
-                    Description = x.Description,
-                    Stock = x.Stock.Select(y => new StockViewModel
-                    {
-                        Id = y.Id,
-                        Description = y.Description,
-                        Qty = y.Qty
-                    })
-                });
+                    Id = y.Id,
+                    Description = y.Description,
+                    Qty = y.Qty
+                })
+            });
         }
 
         public class StockViewModel
@@ -40,6 +43,7 @@ namespace Shop.Application.StockAdmin
         public class ProductViewModel
         {
             public int Id { get; set; }
+            public string Name { get; set; }
             public string Description { get; set; }
             public IEnumerable<StockViewModel> Stock { get; set; }
         }

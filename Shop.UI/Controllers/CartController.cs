@@ -10,7 +10,6 @@ namespace Shop.UI.Controllers
     [Route("[controller]/[action]")]
     public class CartController : Controller
     {
-
         [HttpPost("{stockId}")]
         public async Task<IActionResult> AddOne(
             int stockId,

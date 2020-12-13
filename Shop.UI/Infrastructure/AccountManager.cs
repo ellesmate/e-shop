@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Shop.Application.Emails;
+using Shop.Database.Models;
 using Shop.Domain.Models;
 using System.Threading.Tasks;
 
@@ -54,7 +54,7 @@ namespace Shop.UI.Infrastructure
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var link = GenerateUrl("Accounts", "VerifyEmail", new { userId = user.Id, code });
                 
-                var emailMessage = await _emailTemplateFactory.RenderAccountConfirmationAsync(user, link);
+                var emailMessage = await _emailTemplateFactory.RenderAccountConfirmationAsync(EntityUserToDomainUser(user), link);
 
                 await _emailSink.SendAsync(new SendEmailRequest
                 {
@@ -79,7 +79,8 @@ namespace Shop.UI.Infrastructure
             }
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var emailMessage = await _emailTemplateFactory.RenderAccountResetPasswordAsync(user, code);
+
+            var emailMessage = await _emailTemplateFactory.RenderAccountResetPasswordAsync(EntityUserToDomainUser(user), code);
             await _emailSink.SendAsync(new SendEmailRequest
             {
                 To = user.Email,
@@ -115,5 +116,13 @@ namespace Shop.UI.Infrastructure
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return result.Succeeded;
         }
+
+        private static DomainUser EntityUserToDomainUser(User user) =>
+            new DomainUser
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+            };
     }
 }

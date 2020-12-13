@@ -1,5 +1,7 @@
 ﻿using Shop.Domain.Infrastructure;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
 {
@@ -13,16 +15,17 @@ namespace Shop.Application.ProductsAdmin
             _productManager = productManager;
         }
 
-        public IEnumerable<ProductViewModel> Do()
+        public async Task<IEnumerable<ProductViewModel>> Do()
         {
-            return _productManager
-                .GetProducts(x => new ProductViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Value = x.Value,
-                });
+            var products = await _productManager.GetProducts();
+
+            return products.Select(x => new ProductViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Value = x.Value,
+            });
         }
         public class ProductViewModel
         {

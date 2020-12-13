@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Products
 {
@@ -16,24 +17,25 @@ namespace Shop.Application.Products
             _productManager = productManager;
         }
 
-        public IEnumerable<ProductViewModel> Do(string category, int skip, int take)
+        public async Task<IEnumerable<ProductViewModel>> Do(string category, int skip, int take)
         {
-            return _productManager
-                .GetProductsByCategory(
+            var products = await _productManager
+                .GetProductsWithImagesAndStocksByCategory(
                     category,
-                    x => new ProductViewModel
-                    {
-                        Name = x.Name,
-                        Description = x.Description,
-                        Value = x.Value.GetValueString(),
-                        Slug = x.Slug,
-                        StockCount = x.Stock.Sum(y => y.Qty),
-                        Images = x.Images.Select(y => y.Path)
-                            .Take(2)
-                            .ToList()
-                    },
                     skip,
                     take);
+
+            return products.Select(x => new ProductViewModel
+            {
+                Name = x.Name,
+                Description = x.Description,
+                Value = x.Value.GetValueString(),
+                Slug = x.Slug,
+                StockCount = x.Stocks.Sum(y => y.Qty),
+                Images = x.Images.Select(y => y.Path)
+                            .Take(2)
+                            .ToList()
+            });
         }
         public class ProductViewModel
         {

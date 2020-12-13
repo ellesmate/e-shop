@@ -1,5 +1,5 @@
 ﻿
-namespace Shop.Domain.Models
+namespace Shop.Database.Models
 {
     public class ChatUser
     {

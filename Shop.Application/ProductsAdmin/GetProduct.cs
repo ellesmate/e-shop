@@ -1,4 +1,5 @@
 ﻿using Shop.Domain.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Shop.Application.ProductsAdmin
 {
@@ -12,16 +13,17 @@ namespace Shop.Application.ProductsAdmin
             _productManager = productManager;
         }
 
-        public ProductViewModel Do(int id)
+        public async Task<ProductViewModel> Do(int id)
         {
-            return _productManager
-                .GetProductById(id, x => new ProductViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Value = x.Value,
-                });
+            var product = await _productManager.GetProductById(id);
+
+            return new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Value = product.Value,
+            };
         }
         public class ProductViewModel
         {

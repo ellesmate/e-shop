@@ -17,10 +17,10 @@ namespace Shop.UI.Controllers
     public class ProductsController : Controller
     {
         [HttpGet("")]
-        public IActionResult GetProducts([FromServices] GetProducts getProducts) => Ok(getProducts.Do());
+        public async Task<IActionResult> GetProducts([FromServices] GetProducts getProducts) => Ok(await getProducts.Do());
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int id, [FromServices] GetProduct getProduct) => Ok(getProduct.Do(id));
+        public async Task<IActionResult> GetProduct(int id, [FromServices] GetProduct getProduct) => Ok(await getProduct.Do(id));
 
         [HttpPost("")]
         public async Task<IActionResult> CreateProduct(
@@ -73,6 +73,6 @@ namespace Shop.UI.Controllers
         [HttpPut("")]
         public async Task<IActionResult> UpdateProduct(
             [FromBody] UpdateProduct.Request request,
-            [FromServices] UpdateProduct updateProduct) => Ok((await updateProduct.Do(request)));
+            [FromServices] UpdateProduct updateProduct) => Ok(await updateProduct.Do(request));
     }
 }

@@ -1,29 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shop.Application.Chats;
 using Shop.Database;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Shop.UI.ViewComponents
 {
     public class RoomViewComponent : ViewComponent
     {
-        private ApplicationDbContext _ctx;
+        private readonly GetChats _getChats;
 
-        public RoomViewComponent(ApplicationDbContext ctx)
+        public RoomViewComponent(GetChats getChats)
         {
-            _ctx = ctx;
+            _getChats = getChats;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var chats = _ctx.ChatUsers
-                .Include(x => x.Chat)
-                    .ThenInclude(x => x.Messages)
-                .Where(x => x.UserId == userId)
-                .Select(x => x.Chat)
-                .ToList();
+            var chats = await _getChats.Do(userId);
 
             return View(chats);
         }

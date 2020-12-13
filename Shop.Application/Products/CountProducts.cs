@@ -1,4 +1,5 @@
 ﻿using Shop.Domain.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Shop.Application.Products
 {
@@ -12,9 +13,14 @@ namespace Shop.Application.Products
             _productManager = productManager;
         }
 
-        public int Do()
+        public async Task<int> Do()
         {
-            return _productManager.CountProducts();
+            return await _productManager.CountProducts();
+        }
+
+        public async Task<int> Do(string category)
+        {
+            return await _productManager.CountProductsWithCategory(category);
         }
     }
 }

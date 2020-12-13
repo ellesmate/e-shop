@@ -1,7 +1,6 @@
 ﻿using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,14 +26,16 @@ namespace Shop.Application.ProductsAdmin
                 Images = vm.Images
             };
 
-            if (await _productManager.CreateProduct(product) <= 0)
+            var id = await _productManager.CreateProduct(product);
+
+            if (id <= 0)
             {
                 throw new Exception("Failed to create product");
             }
 
             return new Response
             {
-                Id = product.Id,
+                Id = id,
                 Name = product.Name,
                 Description = product.Description,
                 Value = product.Value

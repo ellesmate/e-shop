@@ -11,8 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using Shop.Database;
+using Shop.Database.Models;
 using Shop.Domain.Enums;
-using Shop.Domain.Models;
 
 namespace Shop.UI
 {
@@ -70,13 +70,13 @@ namespace Shop.UI
                             Description = "Гитара с вырезом Naranda CAG110CNA.",
                             Value = 182.00M,
                             Category = Category.Acoustic,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_1.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848106787046_0.jpg"},
                             }
                         });
 
@@ -87,13 +87,13 @@ namespace Shop.UI
                             Description = "Количество струн: 6. Форма: джаз. Верхняя дека: ель. Нижняя дека и обечайка: махагонь. Накладка грифа: палисандр. Цвет верхней деки: натуральный. Покрытие: глянцевое. Механизм крепления струн: металлический держатель. Звукосниматели: 1 single. Элементы регулировки: звук и тон. Форма резонаторных отверстий: f-образная",
                             Value = 454.54M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_2.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848875781471_0.jpg"},
                             }
                         });
                         context.Add(new Product
@@ -103,13 +103,13 @@ namespace Shop.UI
                             Description = "Электро-классическая гитара/ Корпус - красное дерево с полостями / Передняя дека --- массив ели / Гриф - красное дерево / Накладка на гриф - палисандр / Датчик --- B-Band A11",
                             Value = 915.20M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_3.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848985314941_0.jpg"},
                             }
                         });
 
@@ -120,13 +120,32 @@ namespace Shop.UI
                             Description = "полуакустическая электрогитара, цвет санберст, корпус ламинированный клён, вклееный гриф махогон, накладка грифа палисандр, инкрустация в виде точек, мензура 24,75`, ширина верхнего порожка 42 мм, звукосниматели H-H, регулировки - 2 громкости, 2 тона, 3х-поз.переключатель, фурнитура - хром, бридж — Tune-o-Matic.",
                             Value = 1075.50M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_4.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434849078117060_0.jpg"},
+                            }
+                        });
+
+                        context.Add(new Product
+                        {
+                            Name = "IBANEZ AS93",
+                            Slug = "ibanez-as93",
+                            Description = "Полуакустическая электрогитара Ibanez AS93. Количество ладов: 22. Корпус: волнистый клен. Гриф: 3-кусочный махагон/клен, вклеенный. Накладка: палисандр. Струнодержатель: Quik Change III регулируемый. Звукосниматели: H/H (ACH1/ACH2). Ширина верхнего порожка: 43 мм. Фурнитура: Gold. Цвет: Violin Sunburst.",
+                            Value = 1556.00M,
+                            Category = Category.Electric,
+                            Stocks = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856198085207_0.jpg"},
+                                new Image {Index = 1, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856201395236_1.jpg"},
+                                new Image {Index = 2, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856201441802_2.jpg"},
                             }
                         });
 

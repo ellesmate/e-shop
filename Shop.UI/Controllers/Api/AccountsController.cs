@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Domain.Models;
+using Shop.Database.Models;
 using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers.Api
@@ -9,9 +9,9 @@ namespace Shop.UI.Controllers.Api
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private SignInManager<DomainUser> _signInManager;
+        private SignInManager<User> _signInManager;
 
-        public AccountsController(SignInManager<DomainUser> signInManager)
+        public AccountsController(SignInManager<User> signInManager)
         {
             _signInManager = signInManager;
         }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.Chats
 {
+    [Service]
     public class GetChats
     {
         private IChatManager _chatManager;

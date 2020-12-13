@@ -16,12 +16,12 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Shop.Domain.Models;
 using Shop.UI.Hubs;
 using Shop.S3;
 using Shop.UI.Workers.Email;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Shop.Database.Models;
 
 namespace Shop.UI
 {
@@ -48,7 +48,7 @@ namespace Shop.UI
                 options.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<DomainUser, IdentityRole>(options => 
+            services.AddIdentity<User, IdentityRole>(options => 
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;

@@ -1,4 +1,5 @@
-﻿using Shop.Database.Utils;
+﻿using Microsoft.EntityFrameworkCore;
+using Shop.Database.Utils;
 using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
 using System;
@@ -18,9 +19,10 @@ namespace Shop.Database
             _ctx = ctx;
         }
 
-        public Task<IList<Image>> GetImages(int productId)
+        public async Task<IList<Image>> GetImages(int productId)
         {
-            throw new NotImplementedException();
+            var images = await _ctx.Images.Where(x => x.ProductId == productId).ToListAsync();
+            return images.Select(Projections.EntityImageToDomainImage).ToList();
         }
 
         public async Task<bool> AddImage(int productId, Image image)

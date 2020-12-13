@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Shop.Application.Chats;
-using Shop.Database;
-using Shop.Domain.Infrastructure;
-using Shop.Domain.Models;
 using Shop.UI.Hubs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -27,7 +21,7 @@ namespace Shop.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSupportChat([FromServices] CreateSupportChat createSupportChat)
+        public async Task<IActionResult> CreateChat([FromServices] CreateSupportChat createSupportChat, string returnUrl = null)
         {
             try
             {

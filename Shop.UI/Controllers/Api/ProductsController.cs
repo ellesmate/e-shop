@@ -9,14 +9,14 @@ namespace Shop.UI.Controllers.Api
     public class ProductsController : ControllerBase
     {
         [HttpGet("")]
-        public IActionResult GetProducts(string category, [FromServices] GetProducts getProducts, [FromServices] GetProductsByCategory getProductsByCategory) 
+        public async Task<IActionResult> GetProducts(string category, [FromServices] GetProducts getProducts, [FromServices] GetProductsByCategory getProductsByCategory) 
         {
             if (!string.IsNullOrWhiteSpace(category))
             {
-                return Ok(getProductsByCategory.Do(category, 0, 100));
+                return Ok(await getProductsByCategory.Do(category, 0, 100));
             }
 
-            return Ok(getProducts.Do(0, 100));
+            return Ok(await getProducts.Do(0, 100));
         } 
 
 

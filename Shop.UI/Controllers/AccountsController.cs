@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Domain.Models;
+using Shop.Database.Models;
 using Shop.UI.Infrastructure;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,13 +11,13 @@ namespace Shop.UI.Controllers
     [AllowAnonymous]
     public class AccountsController : Controller
     {
-        private readonly SignInManager<DomainUser> _signInManager;
-        private readonly UserManager<DomainUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
         private readonly AccountManager _accountManager;
 
         public AccountsController(
-            SignInManager<DomainUser> signInManager, 
-            UserManager<DomainUser> userManager,
+            SignInManager<User> signInManager, 
+            UserManager<User> userManager,
             AccountManager accountManager)
         {
             _signInManager = signInManager;
@@ -74,7 +74,7 @@ namespace Shop.UI.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
             {
-                user = new DomainUser
+                user = new User
                 {
                     UserName = email,
                     Email = email,

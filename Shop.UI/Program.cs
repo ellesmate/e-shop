@@ -11,8 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using Shop.Database;
+using Shop.Database.Models;
 using Shop.Domain.Enums;
-using Shop.Domain.Models;
 
 namespace Shop.UI
 {
@@ -27,25 +27,25 @@ namespace Shop.UI
                 using (var scope = host.Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DomainUser>>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
                     context.Database.EnsureCreated();
 
                     if (!context.Users.Any())
                     {
-                        var adminUser = new DomainUser
+                        var adminUser = new User
                         {
                             UserName = "Admin",
                             EmailConfirmed = true
                         };
 
-                        var managerUser = new DomainUser
+                        var managerUser = new User
                         {
                             UserName = "Manager",
                             EmailConfirmed = true
                         };
 
-                        var supportUser = new DomainUser
+                        var supportUser = new User
                         {
                             UserName = "Support",
                             EmailConfirmed = true
@@ -76,7 +76,7 @@ namespace Shop.UI
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_1.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848106787046_0.jpg"},
                             }
                         });
 
@@ -93,7 +93,7 @@ namespace Shop.UI
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_2.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848875781471_0.jpg"},
                             }
                         });
                         context.Add(new Product
@@ -109,7 +109,7 @@ namespace Shop.UI
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_3.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434848985314941_0.jpg"},
                             }
                         });
 
@@ -126,7 +126,26 @@ namespace Shop.UI
                             },
                             Images = new List<Image>
                             {
-                                new Image {Index = 0, Path = "/images/guitar_4.jpg"},
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434849078117060_0.jpg"},
+                            }
+                        });
+
+                        context.Add(new Product
+                        {
+                            Name = "IBANEZ AS93",
+                            Slug = "ibanez-as93",
+                            Description = "Полуакустическая электрогитара Ibanez AS93. Количество ладов: 22. Корпус: волнистый клен. Гриф: 3-кусочный махагон/клен, вклеенный. Накладка: палисандр. Струнодержатель: Quik Change III регулируемый. Звукосниматели: H/H (ACH1/ACH2). Ширина верхнего порожка: 43 мм. Фурнитура: Gold. Цвет: Violin Sunburst.",
+                            Value = 1556.00M,
+                            Category = Category.Electric,
+                            Stocks = new List<Stock>
+                            {
+                                new Stock {Description = "Default", Qty = 100,},
+                            },
+                            Images = new List<Image>
+                            {
+                                new Image {Index = 0, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856198085207_0.jpg"},
+                                new Image {Index = 1, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856201395236_1.jpg"},
+                                new Image {Index = 2, Path = "https://e-shopdotnet-bucket.s3.eu-central-1.amazonaws.com/static/images/637434856201441802_2.jpg"},
                             }
                         });
 

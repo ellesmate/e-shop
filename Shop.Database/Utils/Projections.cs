@@ -40,7 +40,7 @@ namespace Shop.Database.Utils
                 Id = stock.Id,
                 Description = stock.Description,
                 Qty = stock.Qty,
-                ProductId = stock.Id,
+                ProductId = stock.ProductId,
                 //Product = EntityProductToDomainProduct(stock.Product)
             };
 
@@ -113,7 +113,7 @@ namespace Shop.Database.Utils
                 Id = stock.Id,
                 Description = stock.Description,
                 Qty = stock.Qty,
-                ProductId = stock.Id,
+                ProductId = stock.ProductId,
                 //Product = DomainProductToEntityProduct(stock.Product)
             };
 

@@ -169,7 +169,7 @@ namespace Shop.Database
             return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public async Task<int> CreateMessage(Message message)
+        public async Task<(int, DateTime)> CreateMessage(Message message)
         {
             var entityMessage = Projections.DomainMessageToEntityMessage(message);
 
@@ -178,7 +178,7 @@ namespace Shop.Database
             _ctx.Messages.Add(entityMessage);
             await _ctx.SaveChangesAsync();
 
-            return entityMessage.Id;
+            return (entityMessage.Id, entityMessage.Timestamp);
         }
 
         public async Task<bool> IsUserInChat(int chatId, string userId)

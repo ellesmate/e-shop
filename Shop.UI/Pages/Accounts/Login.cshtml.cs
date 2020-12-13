@@ -2,15 +2,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shop.Domain.Models;
+using Shop.Database.Models;
 
 namespace Shop.UI.Pages.Accounts
 {
     public class LoginModel : PageModel
     {
-        private SignInManager<DomainUser> _signInManager;
+        private SignInManager<User> _signInManager;
 
-        public LoginModel(SignInManager<DomainUser> signInManager)
+        public LoginModel(SignInManager<User> signInManager)
         {
             _signInManager = signInManager;
         }

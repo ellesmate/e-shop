@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shop.Application.Products;
@@ -14,12 +15,12 @@ namespace Shop.UI.Pages
         public int PageNumber { get; set; }
         public int PageCount { get; set; }
 
-        public IActionResult OnGet(
+        public async Task<IActionResult> OnGet(
             [FromServices] GetProducts getProducts, 
             [FromServices] CountProducts countProducts,
             int p)
         {
-            int count = countProducts.Do();
+            int count = await countProducts.Do();
             int pages = (int) Math.Ceiling((decimal)count / productsPerPage);
 
             if (p < 1)
@@ -32,7 +33,7 @@ namespace Shop.UI.Pages
                 return RedirectToPage("Shop", new { p = pages });
             }
 
-            Products = getProducts.Do(
+            Products = await getProducts.Do(
                 (p - 1) * productsPerPage,
                 productsPerPage);
             PageNumber = p;

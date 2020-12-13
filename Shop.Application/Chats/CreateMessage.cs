@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.Chats
 {
+    [Service]
     public class CreateMessage
     {
         private readonly IChatManager _chatManager;
@@ -39,7 +40,7 @@ namespace Shop.Application.Chats
             {
                 Text = message.Text,
                 Name = message.Name,
-                Timestamp = message.Timestamp,
+                Timestamp = time,
             };
         }
 

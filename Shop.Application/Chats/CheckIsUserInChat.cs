@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Application.Chats
 {
+    [Service]
     public class CheckIsUserInChat
     {
         private readonly IChatManager _chatManager;

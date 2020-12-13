@@ -25,6 +25,18 @@
         </p>
         <p class="title">{{selectedOrder.orderRef}}</p>
         <p class="subtitle">{{selectedOrder.email}}</p>
+        <br />
+        <p class="title">Products:</p>
+        <div v-for="product in selectedOrder.products">
+            <p>{{product.name}} - {{product.stockDescription}} - {{product.qty}}</p>
+        </div>
+        <br />
+        <p class="title">Address:</p>
+        <p>FullName: {{selectedOrder.firstName}} {{selectedOrder.lastName}}</p>
+        <p>Phone: {{selectedOrder.phoneNumber}}</p>
+        <p>City: {{selectedOrder.city}}</p>
+        <p>Address: {{selectedOrder.address1}}, {{selectedOrder.address2}}</p>
+        <p>Post code: {{selectedOrder.postCode}}</p>
         <button @@click="updateOrder()">Process</button>
     </div>
 

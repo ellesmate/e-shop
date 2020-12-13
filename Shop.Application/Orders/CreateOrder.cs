@@ -43,7 +43,7 @@ namespace Shop.Application.Orders
             public int Qty { get; set; }
         }
 
-        public async Task<bool> Do(Request request)
+        public async Task<string> Do(Request request)
         {
             var order = new Order
             {
@@ -71,9 +71,10 @@ namespace Shop.Application.Orders
             if (id > 0)
             {
                 await _stockManager.RemoveStockFromHold(request.SessionId);
-                return true;
+                return order.OrderRef;
             }
-            return false;
+
+            throw new ArgumentException("Failed to create order.");
         }
 
         public async Task<string> CreateOrderReference()

@@ -69,7 +69,7 @@ namespace Shop.Application.Orders
                 {
                     Name = y.Stock.Product.Name,
                     Description = y.Stock.Product.Description,
-                    Value = $"$ {y.Stock.Product.Value:N2}",
+                    Value = $"${y.Stock.Product.Value:N2}",
                     Qty = y.Qty,
                     StockDescription = y.Stock.Description
                 }),

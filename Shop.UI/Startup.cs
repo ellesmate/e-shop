@@ -108,7 +108,7 @@ namespace Shop.UI
             {
                 options.Cookie.Name = "Cart";
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(20);
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                //options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
             });
 
             services.AddSignalR();

@@ -60,7 +60,7 @@ namespace Shop.UI.Pages.Checkout
 
             var sessionId = HttpContext.Session.Id;
 
-            await createOrder.Do(new CreateOrder.Request
+            var reference = await createOrder.Do(new CreateOrder.Request
             {
                 StripeReference = charge.Id,
                 SessionId = sessionId,
@@ -83,7 +83,7 @@ namespace Shop.UI.Pages.Checkout
 
             sessionManager.ClearCart();
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("Thankyou", new { orderRef = reference });
         }
     }
 }

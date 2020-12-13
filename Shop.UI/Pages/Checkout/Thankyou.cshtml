@@ -1,0 +1,48 @@
+﻿@page "{orderRef}"
+@model Shop.UI.Pages.Checkout.ThankyouModel
+@{
+}
+<section class="section">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-6">
+                <div class="box p-6">
+                    <div class="has-text-centered mb-5">
+                        <img src="https://img.icons8.com/carbon-copy/100/000000/checked-checkbox.png" width="125" height="120" style="border: 0px;" />
+                        <br />
+                        <p class="title has-text-centered">Thank You For Your Order!</p>
+                    </div>
+
+                    <div class="level m-0 p-4" style="background-color: #eeeeee;">
+                        <div class="level-left">
+                            <p><strong>Order Confirmation #</strong></p>
+                        </div>
+                        <div class="level-right">
+                            <p><strong>@Model.Order.OrderRef</strong></p>
+                        </div>
+                    </div>
+                    @foreach (var product in Model.Order.Products)
+                    {
+                        <div class="level m-0 p-2">
+                            <div class="level-left">
+                                <p>@product.Name - @product.StockDescription x @product.Qty</p>
+                            </div>
+                            <div class="level-right">
+                                <p>@product.Value</p>
+                            </div>
+                        </div>
+                    }
+                    <div class="level m-0 p-4" style="background-color: #eeeeee;">
+                        <div class="level-left">
+                            <p><strong>Total</strong></p>
+                        </div>
+                        <div class="level-right">
+                            <p><strong>@Model.Order.TotalValue</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

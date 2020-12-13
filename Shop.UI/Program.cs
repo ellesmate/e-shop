@@ -27,25 +27,25 @@ namespace Shop.UI
                 using (var scope = host.Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DomainUser>>();
 
                     context.Database.EnsureCreated();
 
                     if (!context.Users.Any())
                     {
-                        var adminUser = new User
+                        var adminUser = new DomainUser
                         {
                             UserName = "Admin",
                             EmailConfirmed = true
                         };
 
-                        var managerUser = new User
+                        var managerUser = new DomainUser
                         {
                             UserName = "Manager",
                             EmailConfirmed = true
                         };
 
-                        var supportUser = new User
+                        var supportUser = new DomainUser
                         {
                             UserName = "Support",
                             EmailConfirmed = true
@@ -70,7 +70,7 @@ namespace Shop.UI
                             Description = "Гитара с вырезом Naranda CAG110CNA.",
                             Value = 182.00M,
                             Category = Category.Acoustic,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
@@ -87,7 +87,7 @@ namespace Shop.UI
                             Description = "Количество струн: 6. Форма: джаз. Верхняя дека: ель. Нижняя дека и обечайка: махагонь. Накладка грифа: палисандр. Цвет верхней деки: натуральный. Покрытие: глянцевое. Механизм крепления струн: металлический держатель. Звукосниматели: 1 single. Элементы регулировки: звук и тон. Форма резонаторных отверстий: f-образная",
                             Value = 454.54M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
@@ -103,7 +103,7 @@ namespace Shop.UI
                             Description = "Электро-классическая гитара/ Корпус - красное дерево с полостями / Передняя дека --- массив ели / Гриф - красное дерево / Накладка на гриф - палисандр / Датчик --- B-Band A11",
                             Value = 915.20M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },
@@ -120,7 +120,7 @@ namespace Shop.UI
                             Description = "полуакустическая электрогитара, цвет санберст, корпус ламинированный клён, вклееный гриф махогон, накладка грифа палисандр, инкрустация в виде точек, мензура 24,75`, ширина верхнего порожка 42 мм, звукосниматели H-H, регулировки - 2 громкости, 2 тона, 3х-поз.переключатель, фурнитура - хром, бридж — Tune-o-Matic.",
                             Value = 1075.50M,
                             Category = Category.Electric,
-                            Stock = new List<Stock>
+                            Stocks = new List<Stock>
                             {
                                 new Stock {Description = "Default", Qty = 100,},
                             },

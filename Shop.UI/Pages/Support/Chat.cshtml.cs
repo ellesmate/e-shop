@@ -1,25 +1,23 @@
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Shop.Database;
+using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
 
 namespace Shop.UI.Pages.Support
 {
     public class ChatModel : PageModel
     {
-        private ApplicationDbContext _ctx;
+        private readonly IChatManager _chatManager;
 
-        public ChatModel(ApplicationDbContext ctx)
+        public ChatModel(IChatManager chatManager)
         {
-            _ctx = ctx;
+            _chatManager = chatManager;
+
         }
         public Chat Chat { get; set; }
-        public void OnGet(int id)
+        public async Task OnGet(int id)
         {
-            Chat = _ctx.Chats
-                .Include(x => x.Messages)
-                .FirstOrDefault(x => x.Id == id);
+            Chat = await _chatManager.GetChatWithMessagesById(id);
         }
     }
 }

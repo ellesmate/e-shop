@@ -9,9 +9,9 @@ namespace Shop.UI.Controllers.Api
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private SignInManager<User> _signInManager;
+        private SignInManager<DomainUser> _signInManager;
 
-        public AccountsController(SignInManager<User> signInManager)
+        public AccountsController(SignInManager<DomainUser> signInManager)
         {
             _signInManager = signInManager;
         }

@@ -8,9 +8,9 @@ namespace Shop.UI.Pages.Accounts
 {
     public class LoginModel : PageModel
     {
-        private SignInManager<User> _signInManager;
+        private SignInManager<DomainUser> _signInManager;
 
-        public LoginModel(SignInManager<User> signInManager)
+        public LoginModel(SignInManager<DomainUser> signInManager)
         {
             _signInManager = signInManager;
         }

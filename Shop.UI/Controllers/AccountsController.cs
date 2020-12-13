@@ -11,13 +11,13 @@ namespace Shop.UI.Controllers
     [AllowAnonymous]
     public class AccountsController : Controller
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<DomainUser> _signInManager;
+        private readonly UserManager<DomainUser> _userManager;
         private readonly AccountManager _accountManager;
 
         public AccountsController(
-            SignInManager<User> signInManager, 
-            UserManager<User> userManager,
+            SignInManager<DomainUser> signInManager, 
+            UserManager<DomainUser> userManager,
             AccountManager accountManager)
         {
             _signInManager = signInManager;
@@ -74,7 +74,7 @@ namespace Shop.UI.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
             {
-                user = new User
+                user = new DomainUser
                 {
                     UserName = email,
                     Email = email,

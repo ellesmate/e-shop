@@ -10,14 +10,14 @@ namespace Shop.UI.Infrastructure
 {
     public class AccountManager
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<DomainUser> _userManager;
         private readonly IEmailSink _emailSink;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUrlHelper _urlHelper;
 
         public AccountManager(
-            UserManager<User> userManager,
+            UserManager<DomainUser> userManager,
             IEmailSink emailSink,
             IHttpContextAccessor httpContextAccessor,
             IEmailTemplateFactory emailTemplateFactory,
@@ -41,7 +41,7 @@ namespace Shop.UI.Infrastructure
 
         public async Task<bool> RegisterAsync(string username, string email, string password)
         {
-            var user = new User
+            var user = new DomainUser
             {
                 UserName = username,
                 Email = email

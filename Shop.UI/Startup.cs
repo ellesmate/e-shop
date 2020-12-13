@@ -48,7 +48,7 @@ namespace Shop.UI
                 options.UseNpgsql(connectionString);
             });
 
-            services.AddIdentity<User, IdentityRole>(options => 
+            services.AddIdentity<DomainUser, IdentityRole>(options => 
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;

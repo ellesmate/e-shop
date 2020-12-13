@@ -61,6 +61,31 @@ namespace Shop.Database.Utils
                 Status = order.Status,
             };
 
+        public static DomainUser EntityUserToDomainUser(Entity.User user) =>
+            new DomainUser
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+            };
+
+        public static Chat EntityChatToDomainChat(Entity.Chat chat) =>
+            new Chat
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+            };
+
+        public static Message EntityMessageToDomainMessage(Entity.Message message) =>
+            new Message
+            {
+                Id = message.Id,
+                Text = message.Text,
+                Name = message.Name,
+                Timestamp = message.Timestamp,
+                ChatId = message.ChatId,
+            };
+
         public static Entity.Product DomainProductToEntityProduct(Product product) =>
             new Entity.Product
             {
@@ -107,6 +132,23 @@ namespace Shop.Database.Utils
                 City = order.City,
                 PostCode = order.PostCode,
                 Status = order.Status,
+            };
+
+        public static Entity.Chat DomainChatToEntityChat(Chat chat) =>
+            new Entity.Chat
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+            };
+
+        public static Entity.Message DomainMessageToEntityMessage(Message message) =>
+            new Entity.Message
+            {
+                Id = message.Id,
+                Text = message.Text,
+                Name = message.Name,
+                Timestamp = message.Timestamp,
+                ChatId = message.ChatId,
             };
     }
 }

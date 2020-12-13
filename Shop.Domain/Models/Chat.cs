@@ -10,7 +10,7 @@ namespace Shop.Domain.Models
         public string Name { get; set; }
 
 
-        public ICollection<User> Users { get; set; }
+        public ICollection<DomainUser> Users { get; set; }
         public ICollection<Message> Messages { get; set; }
     }
 }

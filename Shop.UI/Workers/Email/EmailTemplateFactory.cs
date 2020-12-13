@@ -28,13 +28,13 @@ namespace Shop.UI.Workers.Email
                 RenderFooterAsync()
             );
 
-        public Task<string> RenderAccountConfirmationAsync(User user, string link) => 
+        public Task<string> RenderAccountConfirmationAsync(DomainUser user, string link) => 
             Compose(
                 RenderHeaderAsync(),
                 RenderTemplateAsync("account-confirmation", new { User = UserProjection.Project(user), Link = link }),
                 RenderFooterAsync()
             );
-        public Task<string> RenderAccountResetPasswordAsync(User user, string link) =>
+        public Task<string> RenderAccountResetPasswordAsync(DomainUser user, string link) =>
             Compose(
                 RenderHeaderAsync(),
                 RenderTemplateAsync("reset-password", new { User = UserProjection.Project(user), Link = link }),

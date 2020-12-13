@@ -17,5 +17,10 @@ namespace Shop.Application.Products
         {
             return await _productManager.CountProducts();
         }
+
+        public async Task<int> Do(string category)
+        {
+            return await _productManager.CountProductsWithCategory(category);
+        }
     }
 }

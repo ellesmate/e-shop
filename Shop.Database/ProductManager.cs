@@ -209,5 +209,12 @@ namespace Shop.Database
         {
             return _ctx.Products.CountAsync();
         }
+
+        public Task<int> CountProductsWithCategory(string category)
+        {
+            return _ctx.Products
+                .Where(p => p.Category == category)
+                .CountAsync();
+        }
     }
 }

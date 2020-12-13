@@ -26,5 +26,6 @@ namespace Shop.Domain.Infrastructure
         Task<IEnumerable<Product>> GetProductsWithImagesAndStocksByCategory(string category, int skip, int take);
 
         public Task<int> CountProducts();
+        public Task<int> CountProductsWithCategory(string category);
     }
 }

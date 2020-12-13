@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Shop.Application.Chats;
 using Shop.Database;
 using Shop.Domain.Infrastructure;
 using Shop.Domain.Models;
@@ -19,50 +20,34 @@ namespace Shop.UI.Controllers
     public class ChatController : Controller
     {
         private readonly IHubContext<ChatHub> _chatHub;
-        private readonly IChatManager _chatManager;
 
-        public ChatController(ApplicationDbContext ctx, IHubContext<ChatHub> chatHub, IChatManager chatManager)
+        public ChatController(IHubContext<ChatHub> chatHub)
         {
             _chatHub = chatHub;
-            _chatManager = chatManager;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateChat(string name, string returnUrl = null)
+        public async Task<IActionResult> CreateSupportChat([FromServices] CreateSupportChat createSupportChat)
         {
-            var support = await _chatManager.GetUserByUsername("Support");
-            var member = await _chatManager.GetUserWithChatsById(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            
-            if (member.Chats.Count > 0)
+            try
             {
-                return Redirect("/Support/Chat/" + member.Chats.First().Id);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                int chatId = await createSupportChat.Do(userId, "Support");
+                return Redirect("/Support/Chat/" + chatId);
             }
-
-            var chatId = await _chatManager.CreateChat(new Chat
+            catch (ArgumentException ex)
             {
-                Name = member.Username
-            });
-
-            if (chatId <= 0)
-            {
-                return BadRequest("Failed to create chat.");
+                return BadRequest(ex.Message);
             }
-            
-            await _chatManager.AddUserToChat(chatId, member.Id);
-            await _chatManager.AddUserToChat(chatId, support.Id);
-
-            return Redirect("/Support/Chat/" + chatId);
         }
 
         [HttpPost("[action]/{connectionId}/{roomId}")]
-        public async Task<IActionResult> JoinRoom(string connectionId, string roomId)
+        public async Task<IActionResult> JoinRoom(string connectionId, string roomId, [FromServices] CheckIsUserInChat checkIsUserInChat)
         {
             int chatId = int.Parse(roomId);
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //var chat = await _chatManager.GetChatWithUsersById(chatId);
-            //if (chat.Users.Any(x => x.Id == userId))
-            if (await _chatManager.IsUserInChat(chatId, userId))
+            if (await checkIsUserInChat.Do(chatId, userId))
             {
                 await _chatHub.Groups.AddToGroupAsync(connectionId, roomId);
                 return Ok();
@@ -82,33 +67,32 @@ namespace Shop.UI.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> SendMessage(
             int roomId, 
-            string message)
+            string message,
+            [FromServices] CreateMessage createMessage)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!await _chatManager.IsUserInChat(roomId, userId))
+            try
+            {
+                var response = await createMessage.Do(new CreateMessage.Request
+                {
+                    ChatId = roomId,
+                    Text = message,
+                    SenderId = userId,
+                });
+
+                await _chatHub.Clients
+                    .Group(roomId.ToString())
+                    .SendAsync("ReceiveMessage", new
+                    {
+                        response.Text,
+                        response.Name,
+                        response.Timestamp
+                    });
+            }
+            catch (ArgumentException)
             {
                 return Forbid("User doesn't belong to this group.");
             }
-
-            var user = await _chatManager.GetUserById(userId);
-
-            var Message = new Message
-            {
-                ChatId = roomId,
-                Text = message,
-                Name = user.Username
-            };
-
-            var (messageId, time) = await _chatManager.CreateMessage(roomId, Message);
-
-            await _chatHub.Clients
-                .Group(roomId.ToString())
-                .SendAsync("ReceiveMessage", new
-                {
-                    Message.Text,
-                    Message.Name,
-                    time
-                });
 
             return Ok();
         }

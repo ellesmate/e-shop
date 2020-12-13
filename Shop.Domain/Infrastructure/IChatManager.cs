@@ -1,5 +1,6 @@
 ﻿using Shop.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shop.Domain.Infrastructure
@@ -14,11 +15,13 @@ namespace Shop.Domain.Infrastructure
         Task<Chat> GetChatWithUsersById(int id);
         Task<Chat> GetChatWithMessagesById(int id);
 
+        Task<List<Chat>> GetUserChatsWithMessages(string userId);
+
         Task<int> CreateChat(Chat chat);
         Task<bool> AddUserToChat(int chatId, string userId);
         Task<bool> RemoveUserFromChat(int chatId, string userId);
 
-        Task<(int id, DateTime time)> CreateMessage(int chatId, Message message);
+        Task<(int id, DateTime time)> CreateMessage(Message message);
 
         Task<bool> IsUserInChat(int chatId, string userId);
     }

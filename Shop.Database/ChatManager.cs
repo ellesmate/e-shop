@@ -105,6 +105,24 @@ namespace Shop.Database
             return chat;
         }
 
+        public async Task<List<Chat>> GetUserChatsWithMessages(string userId)
+        {
+            var entityChats = await _ctx.ChatUsers
+                .Include(x => x.Chat)
+                    .ThenInclude(x => x.Messages)
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Chat)
+                .ToListAsync();
+
+            return entityChats.Select(c =>
+            {
+                var chat = Projections.EntityChatToDomainChat(c);
+                chat.Messages = c.Messages.Select(Projections.EntityMessageToDomainMessage).ToList();
+                return chat;
+            }).ToList();
+        }
+
+
         public async Task<int> CreateChat(Chat chat)
         {
             var entityChat = Projections.DomainChatToEntityChat(chat);
@@ -151,11 +169,10 @@ namespace Shop.Database
             return (await _ctx.SaveChangesAsync()) > 0;
         }
 
-        public async Task<int> CreateMessage(int chatId, Message message)
+        public async Task<int> CreateMessage(Message message)
         {
             var entityMessage = Projections.DomainMessageToEntityMessage(message);
 
-            entityMessage.ChatId = chatId;
             entityMessage.Timestamp = DateTime.UtcNow;
 
             _ctx.Messages.Add(entityMessage);

@@ -20,6 +20,12 @@ namespace Shop.UI.Controllers
             _chatHub = chatHub;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetChat([FromServices] GetChat getChat, int id)
+        {
+            return Ok(await getChat.Do(id));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateChat([FromServices] CreateSupportChat createSupportChat, string returnUrl = null)
         {

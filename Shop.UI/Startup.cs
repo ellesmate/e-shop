@@ -11,17 +11,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.UI.Infrastructure;
 using FluentValidation.AspNetCore;
-using Npgsql;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Shop.UI.Hubs;
 using Shop.S3;
 using Shop.UI.Workers.Email;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Shop.Database.Models;
+using Shop.Application;
+using Shop.Domain.Infrastructure;
 
 namespace Shop.UI
 {
@@ -44,7 +41,7 @@ namespace Shop.UI
             services.AddDbContext<ApplicationDbContext>(options => 
             {
                 var databaseUrl = Configuration["DATABASE_URL"];
-                var connectionString = GetNpgsqlConnectionString(databaseUrl);
+                var connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, WebHostEnvironment.IsDevelopment());
                 options.UseNpgsql(connectionString);
             });
 
@@ -116,6 +113,8 @@ namespace Shop.UI
             StripeConfiguration.ApiKey = Configuration.GetSection("STRIPE")["SECRET_KEY"];
 
             services.AddApplicationServices()
+                .AddDatabaseManagers()
+                .AddScoped<ISessionManager, SessionManager>()
                 .AddEmailService(Configuration)
                 .AddEShopS3Client(() => Configuration.GetSection(nameof(S3StorageSettings)).Get<S3StorageSettings>());
             services.AddScoped<AccountManager>();
@@ -160,51 +159,6 @@ namespace Shop.UI
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
 
-        }
-
-        public string GetNpgsqlConnectionString(string databaseUrl)
-        {
-            var databaseUri = new Uri(databaseUrl);
-            var userInfo = databaseUri.UserInfo.Split(':');
-            var builder = new NpgsqlConnectionStringBuilder
-            {
-                Host = databaseUri.Host,
-                Port = databaseUri.Port,
-                Username = userInfo[0],
-                Password = userInfo[1],
-                Database = databaseUri.LocalPath.TrimStart('/')
-            };
-
-            if (!WebHostEnvironment.IsDevelopment())
-            {
-                builder.Pooling = true;
-                builder.SslMode = SslMode.Require;
-                builder.TrustServerCertificate = true;
-            }
-
-            return builder.ToString();
-        }
-
-        public class ShopRequirement : ClaimsAuthorizationRequirement, IAuthorizationRequirement
-        {
-            public ShopRequirement(string claimType, IEnumerable<string> allowedValues) : base(claimType, allowedValues) {}
-
-            protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimsAuthorizationRequirement requirement)
-            {
-                if (context.User != null)
-                {
-                    if (context.User.HasClaim(ShopConstants.Claims.Role, ShopConstants.Roles.Admin))
-                    {
-                        context.Succeed(requirement);
-                    }
-                    else
-                    {
-                        return base.HandleRequirementAsync(context, requirement);
-                    }
-                }
-
-                return Task.CompletedTask;
-            }
         }
     }
 }

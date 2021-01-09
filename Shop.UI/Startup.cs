@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Shop.Database.Models;
 using Shop.Application;
 using Shop.Domain.Infrastructure;
+using Shop.UI.Pages.Converters;
 
 namespace Shop.UI
 {
@@ -40,9 +41,9 @@ namespace Shop.UI
 
             services.AddDbContext<ApplicationDbContext>(options => 
             {
-                var databaseUrl = Configuration["DATABASE_URL"];
-                var connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, WebHostEnvironment.IsDevelopment());
-                options.UseNpgsql(connectionString);
+                // var databaseUrl = Configuration["DATABASE_URL"];
+                // var connectionString = ApplicationDbContext.GetNpgsqlConnectionString(databaseUrl, WebHostEnvironment.IsDevelopment());
+                options.UseNpgsql(Configuration["ConnectionStrings:ShopDatabase"]);
             });
 
             services.AddIdentity<User, IdentityRole>(options => 
@@ -57,7 +58,10 @@ namespace Shop.UI
                 .AddDefaultTokenProviders();
 
             
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+            });
             services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {

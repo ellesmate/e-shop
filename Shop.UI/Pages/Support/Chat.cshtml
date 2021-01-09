@@ -26,7 +26,7 @@
         chatBody.scrollTop = chatBody.scrollHeight;
 
         connection.on("ReceiveMessage", function (data) {
-            console.log("received");
+            console.log("received", data);
             displayMessage(data);
         });
 
@@ -91,20 +91,25 @@
                 });
         }
 
-        var fetchMessage = function(id) {
+        var fetchMessages = function() {
             var url = '/Chat/GetChat/' + '@Model.Chat.Id';
             axios.get(url)
                 .then(function (res) {
-                    res.messages.forEach(message => {
-                        displayMessage(message);
-                    });
-                    console.log("Room Joined!", res);
+                    console.log("Got messages!", res);
+                    try {
+                        res.data.messages.forEach(message => {
+                            displayMessage(message);
+                        });
+                    } catch (e) {
+                        console.log("Error:", e);
+                    }
+                    console.log("Messages displayed!", res);
                 })
                 .catch(err => {
                     console.log("Failed to get messages!", err);
                 });
         }
-
+        fetchMessages();
 
     </script>
 }

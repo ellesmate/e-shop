@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Shop.Database.Models;
+using System;
 
 namespace Shop.Database
 {
@@ -28,6 +30,29 @@ namespace Shop.Database
                 .HasKey(x => new { x.StockId, x.OrderId });
             builder.Entity<ChatUser>()
                 .HasKey(x => new { x.ChatId, x.UserId });
+        }
+
+        public static string GetNpgsqlConnectionString(string databaseUrl, bool dev)
+        {
+            var databaseUri = new Uri(databaseUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/')
+            };
+
+            if (!dev)
+            {
+                builder.Pooling = true;
+                builder.SslMode = SslMode.Require;
+                builder.TrustServerCertificate = true;
+            }
+
+            return builder.ToString();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shop.UI.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("[controller]/[action]")]
     public class CartController : Controller
     {

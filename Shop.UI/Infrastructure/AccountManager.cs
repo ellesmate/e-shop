@@ -5,6 +5,7 @@ using Shop.Application.Emails;
 using Shop.Database.Models;
 using Shop.Domain.Models;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Shop.UI.Infrastructure
 {
@@ -13,30 +14,26 @@ namespace Shop.UI.Infrastructure
         private readonly UserManager<User> _userManager;
         private readonly IEmailSink _emailSink;
         private readonly IEmailTemplateFactory _emailTemplateFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUrlHelper _urlHelper;
+        private readonly HostSettings _hostSettings;
 
         public AccountManager(
             UserManager<User> userManager,
             IEmailSink emailSink,
-            IHttpContextAccessor httpContextAccessor,
             IEmailTemplateFactory emailTemplateFactory,
-            IUrlHelper urlHelper)
+            IUrlHelper urlHelper,
+            HostSettings hostSettings)
         {
             _userManager = userManager;
             _emailSink = emailSink;
             _emailTemplateFactory = emailTemplateFactory;
-            _httpContextAccessor = httpContextAccessor;
             _urlHelper = urlHelper;
+            _hostSettings = hostSettings;
         }
 
         private string GenerateUrl(string controller, string action, object query)
         {
-            var context = _httpContextAccessor.HttpContext;
-            var scheme = context.Request.Scheme;
-            var host = context.Request.Host.Value;
-
-            return _urlHelper.Action(action, controller, query, scheme, host);
+            return _urlHelper.Action(action, controller, query, _hostSettings.Scheme, _hostSettings.Host);
         }
 
         public async Task<bool> RegisterAsync(string username, string email, string password)

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.UI.Infrastructure;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.HttpOverrides;
 using Shop.UI.Hubs;
 using Shop.S3;
 using Shop.UI.Workers.Email;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Shop.Database.Models;
 using Shop.Application;
 using Shop.Domain.Infrastructure;
-using Shop.UI.Pages.Converters;
+using Shop.UI.Converters;
 
 namespace Shop.UI
 {
@@ -73,6 +74,12 @@ namespace Shop.UI
                 })
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssembly(typeof(Startup).Assembly));
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+            
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
@@ -123,6 +130,8 @@ namespace Shop.UI
                 .AddEShopS3Client(() => Configuration.GetSection(nameof(S3StorageSettings)).Get<S3StorageSettings>());
             services.AddScoped<AccountManager>();
 
+            services.AddSingleton(Configuration.GetSection("HostSettings").Get<HostSettings>());
+
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper>(x => {
                 var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
@@ -132,19 +141,25 @@ namespace Shop.UI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
+                app.UseForwardedHeaders();
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

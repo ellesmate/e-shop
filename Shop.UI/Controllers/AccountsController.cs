@@ -45,9 +45,9 @@ namespace Shop.UI.Controllers
             return BadRequest();
         }
 
-        public IActionResult ExternalLogin()
+        public IActionResult ExternalLogin([FromServices] HostSettings hostSettings)
         {
-            var redirectUrl = Url.Action("ExternalResponse", "Accounts");
+            var redirectUrl = Url.Action("ExternalResponse", "Accounts",null, hostSettings.Scheme, hostSettings.Host);
             var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
 
             return new ChallengeResult("Google", properties);

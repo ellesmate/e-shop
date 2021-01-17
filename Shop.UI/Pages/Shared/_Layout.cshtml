@@ -32,7 +32,7 @@
 
                         <div class="column navbar-item has-text-right">
                             @{
-                                string userLink = User.Identity.IsAuthenticated ? "Accounts/Logout" : "Accounts/Login";
+                                string userLink = User.Identity.IsAuthenticated ? "/Accounts/Logout" : "/Accounts/Login";
                             }
                             <a href="@userLink">
                                 <span class="icon">
